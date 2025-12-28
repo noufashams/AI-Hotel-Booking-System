@@ -1,0 +1,530 @@
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Inter',sans-serif;
+}
+
+body{
+  color:#222;
+}
+
+/* NAVBAR */
+/* STUDIA 54 STYLE - DARK LUXURY */
+.navbar {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  background: #000000; /* Deep Black */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Very thin "hairline" border */
+  z-index: 1000;
+  padding: 25px 0;
+}
+
+.nav-container {
+  max-width: 1600px; /* Wide layout */
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 50px;
+}
+
+.logo {
+  font-size: 18px;
+  letter-spacing: 6px; /* Wide spacing for high-end feel */
+  font-weight: 300;
+  color: #ffffff;
+  text-transform: uppercase;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.7); /* Slightly dimmed white */
+  font-size: 10px; 
+  font-weight: 400;
+  letter-spacing: 3px;
+  margin: 0 20px;
+  text-transform: uppercase;
+  transition: color 0.4s ease;
+}
+
+.nav-links a:hover {
+  color: #ffffff; /* Glow to pure white on hover */
+}
+
+/* Luxury Buttons */
+.btn-login {
+  color: #ffffff;
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-decoration: none;
+  margin-left: 40px;
+  margin-right: 20px;
+}
+
+.btn-cta {
+  border: 1px solid #ffffff;
+  padding: 12px 30px;
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: #ffffff;
+  text-decoration: none;
+  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.btn-cta:hover {
+  background: #ffffff;
+  color: #000000;
+}
+
+/* HERO */
+/* THE ELITE HERO SECTION */
+.hero {
+  height: 100vh;
+  background: url('assets/hero.png') center/cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.8) 100%);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  color: white;
+  padding: 0 20px;
+}
+
+.hero-label {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 6px;
+  margin-bottom: 24px;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+}
+
+.hero-content h1 {
+  font-size: clamp(40px, 8vw, 90px); /* Scales based on screen size */
+  font-weight: 200;
+  letter-spacing: 18px; /* High luxury spacing */
+  line-height: 1.1;
+  text-transform: uppercase;
+  margin-bottom: 30px;
+  margin-right: -18px; /* Offsets last letter spacing to keep it perfectly centered */
+}
+
+.hero-content p {
+  font-size: 11px;
+  letter-spacing: 4px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.7);
+  max-width: 500px;
+  margin: 0 auto 50px auto;
+  text-transform: uppercase;
+}
+
+.btn-luxury {
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  padding: 18px 45px;
+  font-size: 9px;
+  letter-spacing: 4px;
+  color: #ffffff;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.btn-luxury:hover {
+  background: #ffffff;
+  color: #000;
+  border-color: #ffffff;
+}
+
+/* IMAGE SECTION */
+/* MODERN EXPERIENCE SECTION */
+.image-section {
+  height: 90vh;
+  background: url('assets/section.jpg') center/cover no-repeat fixed;
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding-left: 10%; /* Keeps text to the left like Studia 54 */
+}
+
+.image-overlay {
+  position: absolute;
+  inset: 0;
+  /* This creates a shadow behind the text while keeping the right side clear */
+  background: linear-gradient(to right, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 100%);
+}
+
+.image-section .content {
+  position: relative;
+  z-index: 2;
+  color: white;
+  max-width: 550px;
+}
+
+.section-subtitle {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 5px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
+
+.image-section .content h2 {
+  font-size: 48px;
+  font-weight: 200; /* Ultra-light architectural weight */
+  letter-spacing: 10px;
+  line-height: 1.2;
+  text-transform: uppercase;
+  margin-bottom: 25px;
+}
+
+.image-section .content p {
+  font-size: 15px;
+  line-height: 1.8;
+  letter-spacing: 1.5px;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 300;
+  margin-bottom: 30px;
+}
+
+.line-accent {
+  width: 60px;
+  height: 1px;
+  background: white;
+  opacity: 0.5;
+}
+/* THE LUXURY BACKGROUND WRAPPER */
+.luxury-bg-wrapper {
+  background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), 
+              url('assets/footer-bg.jpg') center/cover no-repeat fixed;
+  display: block;
+  width: 100%;
+}
+/* STATS */
+/* LUXURY STATS SECTION */
+/* 1. THE MAIN CONTAINER */
+.luxury-bg-wrapper {
+  width: 100%;
+  /* Temporary dark gray background so you can see the white text */
+  background: #1a1a1a; 
+  /* Once your image works, this line below will take over */
+  background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), 
+              url('assets/footer-bg.jpg') center/cover no-repeat fixed;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 2. MAKE SECTIONS TRANSPARENT */
+.stats, .contact {
+  background: transparent !important;
+  padding: 100px 20px;
+  text-align: center;
+}
+
+/* 3. FIX THE STATS GRID */
+.stats-grid {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.stat-card h2 {
+  color: white;
+  font-size: 48px;
+  font-weight: 200;
+  margin: 0;
+}
+
+.stat-card p {
+  color: rgba(255,255,255,0.5);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 10px;
+}
+
+/* 4. FIX THE FORM LAYOUT */
+.contact form {
+  display: flex;
+  flex-direction: column;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.contact input, .contact textarea {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid white;
+  color: white;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+/* FOOTER */
+footer {
+  background: #000;
+  color: rgba(255, 255, 255, 0.4);
+  padding: 60px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* AUTHENTICATION PAGES (LOGIN/SIGNUP) */
+.auth-page {
+    background: #000;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-container {
+    text-align: center;
+    width: 100%;
+    max-width: 450px; /* Standard size */
+}
+
+.signup-wide {
+    max-width: 700px; /* Extra room for the side-by-side fields */
+}
+
+.auth-logo {
+    color: white;
+    text-decoration: none;
+    letter-spacing: 8px;
+    font-size: 14px;
+    display: block;
+    margin-bottom: 50px;
+}
+
+.auth-box {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 60px 40px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: left; /* Better alignment for luxury feel */
+}
+
+.auth-box h1 {
+    color: white;
+    font-size: 18px;
+    letter-spacing: 4px;
+    font-weight: 300;
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+/* --- THE FIX FOR ALIGNMENT --- */
+.input-row {
+    display: flex;
+    gap: 30px;
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+.input-row .input-group {
+    flex: 1;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 35px;
+}
+
+.input-group input, 
+.input-group textarea {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 12px 0;
+    color: white;
+    font-size: 14px;
+    outline: none;
+}
+
+/* Floating Label Logic */
+.input-group label {
+    position: absolute;
+    left: 0;
+    top: 12px;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    pointer-events: none;
+    transition: 0.3s ease all;
+}
+
+/* Move label up when typing */
+.input-group input:focus ~ label,
+.input-group input:valid ~ label,
+.input-group textarea:focus ~ label,
+.input-group textarea:valid ~ label {
+    top: -15px;
+    font-size: 8px;
+    color: #fff;
+}
+
+/* FILE UPLOAD STYLING */
+/* Update this part in your style.css */
+.input-group input[type="file"] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+.custom-file-label {
+    display: block;
+    width: 100%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 12px 0;
+    cursor: pointer;
+    transition: 0.3s ease;
+    /* This ensures it sits at the same level as the text inputs */
+    height: 45px; 
+    display: flex;
+    align-items: flex-end;
+}
+
+.custom-file-label span {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+}
+
+.custom-file-label:hover {
+    border-bottom-color: #fff;
+}
+
+/* BUTTONS */
+.btn-auth {
+    width: 100%;
+    background: white;
+    color: black;
+    border: none;
+    padding: 15px;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.btn-auth:hover {
+    background: transparent;
+    color: white;
+    outline: 1px solid white;
+}
+/* Add this to the bottom of your style.css */
+
+.custom-file-label {
+    display: block !important;
+    cursor: pointer !important;
+    position: relative !important;
+    z-index: 5; /* Brings the button to the front */
+}
+
+/* This prevents the "Floating Label" movement from breaking the file button */
+.input-group .custom-file-label span {
+    position: static !important; /* Overrides the absolute positioning of normal labels */
+    pointer-events: none; /* Let's the click go through to the label */
+    display: block;
+    padding-top: 10px;
+}
+/* Ensure the file upload area is the priority for clicks */
+.custom-file-label {
+    display: flex !important;
+    align-items: flex-end;
+    width: 100%;
+    height: 45px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    cursor: pointer !important;
+    position: relative;
+    z-index: 10; /* Put this in front of everything else */
+}
+
+.custom-file-label span {
+    position: static !important; /* This stops it from flying to the top left */
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    pointer-events: none; /* Allows the click to pass through to the label */
+}
+.auth-footer-container {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05); /* Subtle separator line */
+    text-align: center;
+}
+
+/* Make the text visible and elegant */
+.compliance-note {
+    color: rgba(255, 255, 255, 0.8) !important; /* Brighter white */
+    font-size: 10px !important;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 400;
+    line-height: 1.6;
+    margin: 0;
+}
+/* Container for the footer to ensure it stays at the bottom with room */
+.auth-footer-wrapper {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05); /* Very subtle line to separate from button */
+    text-align: center;
+}
+
+/* The specific text styling */
+.auth-registration-note {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: rgba(255, 255, 255, 0.5); /* Semi-transparent white */
+    text-transform: uppercase;
+}
+
+/* The "START HERE" link styling */
+.gold-link {
+    color: #DAA520; /* Gold color */
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 5px;
+    transition: 0.3s;
+    border-bottom: 1px solid transparent;
+}
+
+.gold-link:hover {
+    color: #fff;
+    border-bottom: 1px solid #fff;
+}

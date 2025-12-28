@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>STAYSMART | REGISTER PROPERTY</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="auth-page">
+    <div class="auth-container signup-wide">
+        <a href="index.html" class="auth-logo">STAYSMART</a>
+        
+        <div class="auth-box">
+            <h1>REGISTER PROPERTY</h1>
+            
+            <form id="registrationForm" enctype="multipart/form-data" method="POST">
+                
+                <div class="input-row">
+                    <div class="input-group">
+                        <input type="text" name="hotel_id" required>
+                        <label>LICENSE NUMBER</label>
+                    </div>
+                    
+                    <div class="input-group">
+                        <input type="file" id="license-upload" name="license" style="display:none !important;" required>
+                        <div class="custom-file-label" id="upload-trigger">
+                            <span id="file-name">UPLOAD LICENSE PDF</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-row">
+                    <div class="input-group">
+                        <input type="text" name="hotel_name" required>
+                        <label>HOTEL NAME</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="email" id="workEmail" name="contact_email" required>
+                        <label>OFFICIAL WORK EMAIL</label>
+                    </div>
+                </div>
+<div class="input-group">
+    <input type="password" name="password" required>
+    <label>CREATE SYSTEM PASSWORD</label>
+</div>
+                <div class="input-group">
+                    <input type="text" name="address" required>
+                    <label>PHYSICAL PROPERTY ADDRESS</label>
+                </div>
+
+                <button type="submit" class="btn-auth">SUBMIT FOR VERIFICATION</button>
+            </form>
+            
+            <div class="auth-footer-container">
+            <p class="compliance-note">OUR COMPLIANCE TEAM WILL REVIEW YOUR CREDENTIALS WITHIN 24H.</p>
+        </div>
+    </div>
+        </div> 
+    </div>
+
+    <script>
+    const actualInput = document.getElementById('license-upload');
+    const fakeButton = document.getElementById('upload-trigger');
+    const nameDisplay = document.getElementById('file-name');
+    const registrationForm = document.getElementById('registrationForm');
+
+    // 1. THIS WAS MISSING: Make the fake button click the real hidden input
+    fakeButton.addEventListener('click', function() {
+        actualInput.click();
+    });
+
+    // 2. Update the text when a file is chosen so the user knows it worked
+    actualInput.addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+            nameDisplay.innerText = "FILE: " + this.files[0].name;
+            nameDisplay.style.color = "#DAA520"; // Change to gold color
+        }
+    });
+
+    // 3. The Submit Logic
+    registrationForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(registrationForm);
+
+        try {
+            const response = await fetch('http://localhost:3000/api/register-property', {
+                method: 'POST',
+                body: formData 
+            });
+
+            if (response.ok) {
+                alert("Application Submitted! Check pgAdmin properties table.");
+                window.location.href = "index.html";
+            } else {
+                alert("Submission failed. Please try again.");
+            }
+        } catch (err) {
+            alert("Error connecting to database. Is your backend running?");
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>STAYSMART | ACCESS</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Ensuring the error message looks clean and luxury-aligned */
+        #error-msg {
+            color: #ff4444; 
+            font-size: 11px; 
+            margin-top: 15px; 
+            text-align: center; 
+            display: none; 
+            letter-spacing: 2px;
+            font-weight: 400;
+        }
+    </style>
+</head>
+<body class="auth-page">
+    <div class="auth-container">
+        <a href="index.html" class="auth-logo">STAYSMART</a>
+        <div class="auth-box">
+            <h1>LOGIN</h1>
+            
+            <form id="loginForm">
+                <div class="input-group">
+                    <input type="email" id="emailInput" required>
+                    <label>EMAIL ADDRESS</label>
+                </div>
+                <div class="input-group">
+                    <input type="password" id="passwordInput" required>
+                    <label>PASSWORD</label>
+                </div>
+                <button type="submit" class="btn-auth">ACCESS DASHBOARD</button>
+            </form>
+            
+            <div id="error-msg">INVALID EMAIL OR PASSWORD</div>
+
+            <div class="auth-footer-wrapper">
+                <p class="auth-registration-note">
+                    NEED TO REGISTER A NEW PROPERTY? <a href="hotel-signup.html" class="gold-link">START HERE</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // This matches your HTML IDs: emailInput and passwordInput
+        const email = document.getElementById('emailInput').value;
+        const password = document.getElementById('passwordInput').value;
+        const errorMsg = document.getElementById('error-msg');
+
+        try {
+            const response = await fetch('http://localhost:3000/api/hotel/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Save session info
+                localStorage.setItem('hotelName', data.hotelName);
+                localStorage.setItem('hotelId', data.hotelId);
+                localStorage.setItem('userRole', 'hotel'); 
+                
+                // Redirect to the hotel dashboard
+                window.location.href = "hotel-dashboard.html";
+            } else {
+                // Show the specific error (Invalid or Pending) on the screen
+                errorMsg.style.display = "block";
+                errorMsg.innerText = data.message.toUpperCase();
+            }
+        } catch (err) {
+            console.error("Login error:", err);
+            alert("Server connection failed. Make sure app.js is running.");
+        }
+    });
+</script>
+</body>
+</html>

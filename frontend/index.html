@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StaySmart</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    /* VOICE AI ORB STYLES */
+    .ai-orb {
+        width: 100px;
+        height: 100px;
+        background: radial-gradient(circle, #DAA520 0%, #000 80%);
+        border-radius: 50%;
+        margin: 0 auto;
+        cursor: pointer;
+        position: relative;
+        transition: 0.5s;
+        border: 1px solid rgba(218, 165, 32, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .ai-orb.listening {
+        box-shadow: 0 0 50px #DAA520;
+        transform: scale(1.1);
+        border: 1px solid #DAA520;
+    }
+    .pulse-ring {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        border: 2px solid #DAA520;
+        border-radius: 50%;
+        animation: orb-pulse 2s infinite;
+        opacity: 0;
+        pointer-events: none;
+    }
+    @keyframes orb-pulse {
+        0% { transform: scale(1); opacity: 0.5; }
+        100% { transform: scale(2.5); opacity: 0; }
+    }
+    #aiStatus {
+        font-size: 11px; 
+        letter-spacing: 3px; 
+        margin-top: 25px; 
+        font-weight: 300; 
+        color: #fff;
+        text-transform: uppercase;
+    }
+    #aiTranscript {
+        opacity: 0.6; 
+        font-style: italic; 
+        font-size: 14px; 
+        margin-top: 12px; 
+        min-height: 20px; 
+        font-weight: 300; 
+        color: #DAA520;
+    }
+    html { scroll-behavior: smooth; }
+  </style>
+</head>
+<body>
+
+<header class="navbar">
+  <div class="nav-container">
+    <div class="logo">STAYSMART</div>
+    <div class="nav-right">
+      <nav class="nav-links">
+        <a href="#home">HOME</a>
+        <a href="#about">ABOUT</a>
+        <a href="#contact">CONCIERGE</a>
+      </nav>
+      <div class="nav-buttons">
+        <a href="hotel-login.html" class="btn-login">LOGIN</a>
+        <a href="hotel-signup.html" class="btn-cta">SIGN UP</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="home" class="hero">
+  <div class="hero-overlay"></div>
+  <div class="hero-content" data-aos="fade-up">
+    <span class="hero-label">THE FUTURE OF HOSPITALITY</span>
+    <h1>ARRIVE WITHOUT<br>EFFORT</h1>
+    <p>AI-DRIVEN PRECISION. INVISIBLE SERVICE. ABSOLUTE PRESENCE.</p>
+    <div class="hero-action">
+        <a href="#contact" class="btn-luxury">TALK TO CONCIERGE</a>
+    </div>
+  </div>
+</section>
+
+<section id="about" class="image-section">
+  <div class="image-overlay"></div>
+  <div class="content" data-aos="fade-right">
+    <span class="section-subtitle">THE NEW STANDARD</span>
+    <h2>WHERE TECHNOLOGY<br>DISAPPEARS</h2>
+    <p>
+      StaySmart replaces rigid forms with natural dialogue. 
+      We’ve engineered a platform that anticipates your needs, 
+      allowing the art of hospitality to take center stage.
+    </p>
+    
+    <div class="about-stats" style="display: flex; gap: 40px; margin-top: 50px; border-top: 1px solid rgba(218, 165, 32, 0.3); padding-top: 30px;">
+      <div class="stat-item" data-aos="fade-up" data-aos-delay="100">
+        <h3 style="color: #DAA520; font-size: 1.8rem; margin: 0;">10k+</h3>
+        <p style="font-size: 0.7rem; letter-spacing: 1px; text-transform: uppercase; margin-top: 5px;">Happy Guests</p>
+      </div>
+      <div class="stat-item" data-aos="fade-up" data-aos-delay="200">
+        <h3 style="color: #DAA520; font-size: 1.8rem; margin: 0;">300+</h3>
+        <p style="font-size: 0.7rem; letter-spacing: 1px; text-transform: uppercase; margin-top: 5px;">Hotels</p>
+      </div>
+      <div class="stat-item" data-aos="fade-up" data-aos-delay="300">
+        <h3 style="color: #DAA520; font-size: 1.8rem; margin: 0;">10k+</h3>
+        <p style="font-size: 0.7rem; letter-spacing: 1px; text-transform: uppercase; margin-top: 5px;">Bookings</p>
+      </div>
+    </div>
+    <div class="line-accent"></div>
+  </div>
+</section>
+
+<div class="luxury-bg-wrapper">
+  <section id="contact" class="contact" style="padding: 120px 20px; text-align: center; background: #000; position: relative; z-index: 5;">
+    <h2 data-aos="fade-up" style="margin-bottom: 10px; color: #DAA520; font-family: 'Inter', sans-serif; letter-spacing: 2px;">INSTANT CONCIERGE</h2>
+    <p data-aos="fade-up" style="margin-bottom: 50px; opacity: 0.8; color: #ffffff; font-weight: 300;">Experience the future of booking through natural conversation.</p>
+    
+    <div class="voice-assistant-container" data-aos="fade-up" style="position: relative; z-index: 10;">
+        <div class="ai-orb" id="voiceTrigger" style="margin: 0 auto;">
+            <div class="pulse-ring"></div>
+            <div style="width: 8px; height: 8px; background: #DAA520; border-radius: 50%; box-shadow: 0 0 10px #DAA520;"></div>
+        </div>
+        
+        <h2 id="aiStatus">TAP TO START CONVERSATION</h2>
+        <p id="aiTranscript"></p>
+    </div>
+</section>
+</div>
+
+<footer>
+  <p>© 2025 StaySmart — AI Hotel Booking Platform</p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+<script>AOS.init({ duration: 900, once: true });</script>
+
+<script>
+    const orb = document.getElementById('voiceTrigger');
+    const status = document.getElementById('aiStatus');
+    const transcript = document.getElementById('aiTranscript');
+    const synth = window.speechSynthesis;
+
+    function getAIResponse(userInput) {
+        const input = userInput.toLowerCase();
+        if (input.includes("paris")) return "I have found three luxury penthouses in Paris with Eiffel Tower views. Shall I reserve a viewing?";
+        if (input.includes("pool")) return "I recommend the Azure Resort for its world-class infinity pool.";
+        if (input.includes("budget") || input.includes("price")) return "We have a curated boutique collection for various budgets. What is your range?";
+        if (input.includes("hello") || input.includes("hi")) return "Welcome to StaySmart. I am your personal concierge. Where would you like to escape to?";
+        return "That sounds wonderful. Let me search our exclusive network for the best options.";
+    }
+
+    function speak(text) {
+        if (synth.speaking) { synth.cancel(); }
+        const utterance = new SpeechSynthesisUtterance(text);
+        const voices = synth.getVoices();
+        utterance.voice = voices.find(v => v.name.includes('Google') || v.name.includes('Premium')) || voices[0];
+        utterance.rate = 0.9;
+        synth.speak(utterance);
+    }
+
+    const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (Recognition) {
+        const rec = new Recognition();
+        rec.lang = 'en-US';
+        orb.onclick = () => {
+            try {
+                rec.start();
+                orb.classList.add('listening');
+                status.innerText = "STAYSMART IS LISTENING...";
+                synth.cancel();
+            } catch(e) {}
+        };
+        rec.onresult = (event) => {
+            const userText = event.results[0][0].transcript;
+            transcript.innerText = `"${userText}"`;
+            status.innerText = "ANALYZING...";
+            const responseText = getAIResponse(userText);
+            setTimeout(() => {
+                orb.classList.remove('listening');
+                status.innerText = responseText.toUpperCase();
+                speak(responseText);
+            }, 1500);
+        };
+    }
+</script>
+</body>
+</html>
