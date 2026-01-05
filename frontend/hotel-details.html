@@ -61,8 +61,8 @@
     </div>
 </section>
 
-    <script>
-      document.addEventListener('DOMContentLoaded', async () => {
+   <script>
+document.addEventListener('DOMContentLoaded', async () => {
     const urlParams = new URLSearchParams(window.location.search);
     const slug = urlParams.get('slug');
     const synth = window.speechSynthesis;
@@ -82,6 +82,9 @@
             document.getElementById('displayHotelName').innerText = hotel.hotel_name;
             document.getElementById('displayLocation').innerText = hotel.location;
             
+            // Save ID for the Voice AI to use
+            localStorage.setItem('activeHotelId', hotel.hotel_id);
+
             const roomContainer = document.getElementById('roomContainer');
             roomContainer.innerHTML = rooms.length ? "" : "<p>No rooms available.</p>";
 
@@ -92,11 +95,10 @@
                         <p style="opacity: 0.6; font-size: 14px;">${room.description || 'Luxury accommodations.'}</p>
                         <div style="margin-top: 20px; display: flex; justify-content: space-between; align-items: center;">
                             <span style="font-size: 1.5rem; font-weight: bold;">$${room.price}</span>
-                            <button class="btn-luxury" style="padding: 10px 20px; font-size: 10px;">BOOK NOW</button>
+                            <button class="btn-luxury" style="padding: 10px 20px; font-size: 10px; background: #DAA520; border:none; cursor:pointer;">BOOK NOW</button>
                         </div>
                     </div>`;
             });
-            localStorage.setItem('activeHotelId', hotel.hotel_id);
         }
     } catch (err) {
         console.error("Error loading details:", err);
@@ -124,7 +126,6 @@
             orb.classList.remove('listening');
             status.innerText = "THINKING...";
 
-            // Send to your backend AI route
             try {
                 const response = await fetch('http://localhost:3000/api/ai/chat', {
                     method: 'POST',
@@ -146,11 +147,15 @@
     function speak(text) {
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.rate = 0.95;
+        // Optional: Choose a more premium-sounding voice if available
+        const voices = synth.getVoices();
+        if(voices.length > 0) utterance.voice = voices[0]; 
+        
         synth.speak(utterance);
-        // Update UI text once speaking starts
-        utterance.onstart = () => { status.innerText = text.toUpperCase(); };
+        utterance.onstart = () => { status.innerText = "AI IS SPEAKING..."; };
+        utterance.onend = () => { status.innerText = "TALK TO OUR BOOKING CONCIERGE"; };
     }
 });
-    </script>
+</script>
 </body>
 </html>

@@ -5,36 +5,85 @@
     <title>STAYSMART | STAFF PANEL</title>
     <style>
         :root { --accent: #DAA520; --bg: #0a0a0a; --panel: #141414; }
-        body { background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; margin: 0; display: flex; height: 100vh; }
+        body { background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden; }
+        
+        /* Sidebar Styles */
         .sidebar { width: 260px; background: var(--panel); border-right: 1px solid rgba(255,255,255,0.05); padding: 40px 20px; }
-        .main-content { flex: 1; padding: 60px; }
-        .stat-card { background: var(--panel); padding: 30px; border: 1px solid rgba(255,255,255,0.1); width: 250px; }
-        .accent-text { color: var(--accent); font-size: 24px; font-weight: bold; }
+        .sidebar-link { color: #fff; text-decoration: none; display: block; padding: 12px 0; font-size: 13px; letter-spacing: 1px; transition: 0.3s; }
+        .sidebar-link:hover { color: var(--accent); }
+
+        /* Main Content */
+        .main-content { flex: 1; padding: 60px; overflow-y: auto; }
+        .dashboard-grid { display: flex; gap: 20px; margin-top: 30px; }
+        
+        .stat-card { background: var(--panel); padding: 30px; border: 1px solid rgba(255,255,255,0.1); width: 250px; border-radius: 4px; }
+        .accent-text { color: var(--accent); font-size: 32px; font-weight: bold; margin-top: 10px; }
+
+        .table-section { margin-top: 40px; background: var(--panel); padding: 20px; border: 1px solid #222; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th { text-align: left; color: var(--accent); font-size: 11px; text-transform: uppercase; padding: 10px; border-bottom: 1px solid #333; }
+        td { padding: 10px; font-size: 14px; border-bottom: 1px solid #1a1a1a; }
     </style>
 </head>
 <body>
+
     <aside class="sidebar">
-        <h2 style="color: var(--accent); letter-spacing: 5px;">STAYSMART</h2>
-        <p style="font-size: 10px; opacity: 0.5;">STAFF PORTAL</p>
-        <nav style="margin-top: 50px;">
-            <a href="#" style="color: #fff; text-decoration: none; display: block; padding: 10px 0;">VIEW BOOKINGS</a>
-            <a href="hotel-login.html" style="color: #ff4444; text-decoration: none; display: block; padding: 10px 0; margin-top: 20px;">LOGOUT</a>
+        <h2 style="color: var(--accent); letter-spacing: 5px; margin-bottom: 5px;">STAYSMART</h2>
+        <p style="font-size: 10px; opacity: 0.5; margin-bottom: 40px;">STAFF PORTAL</p>
+        <nav>
+            <a href="#" class="sidebar-link" onclick="loadBookings()">VIEW LIVE BOOKINGS</a>
+            <a href="#" class="sidebar-link">ROOM MANAGEMENT</a>
+            <a href="#" class="sidebar-link">GUEST MESSAGES</a>
+            <a href="hotel-login.html" id="logoutBtn" style="color: #ff4444; margin-top: 40px;" class="sidebar-link">LOGOUT</a>
         </nav>
     </aside>
 
     <main class="main-content">
-        <h1>STAFF OVERVIEW</h1>
-        <div class="stat-card">
-            <p style="font-size: 10px; letter-spacing: 2px;">TODAY'S BOOKINGS</p>
-            <div id="bookingCount" class="accent-text">0</div>
+        <h1 style="letter-spacing: 3px; font-weight: 300;">STAFF OVERVIEW</h1>
+
+        <div class="dashboard-grid">
+            <div class="stat-card">
+                <p style="font-size: 10px; letter-spacing: 2px; opacity: 0.6;">ACTIVE RESERVATIONS</p>
+                <div id="bookingCount" class="accent-text">0</div>
+            </div>
         </div>
+
+        <section class="table-section">
+            <h3 style="font-weight: 300; letter-spacing: 2px;">RECENT ACTIVITY</h3>
+            <table id="bookingTable">
+                <thead>
+                    <tr>
+                        <th>Guest</th>
+                        <th>Room Type</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="bookingList">
+                    </tbody>
+            </table>
+        </section>
     </main>
 
     <script>
-        // Security Check for Staff
-        const role = localStorage.getItem('userRole');
-        if (role !== 'staff') {
+        // 1. Security Check
+        document.addEventListener('DOMContentLoaded', () => {
+            const role = localStorage.getItem('userRole');
+            if (role !== 'staff') {
+                window.location.href = "hotel-login.html";
+            }
+        });
+
+        // 2. Simple Logout Logic
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            localStorage.clear();
             window.location.href = "hotel-login.html";
+        });
+
+        // 3. Placeholder for loading bookings
+        function loadBookings() {
+            // You can add a fetch here later if you want to show real data
+            console.log("Fetching bookings for hotel ID:", localStorage.getItem('activeHotelId'));
         }
     </script>
 </body>

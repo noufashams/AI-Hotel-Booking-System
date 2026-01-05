@@ -441,6 +441,56 @@ app.post('/api/ai/chat', async (req, res) => {
         res.status(500).json({ reply: "I'm having trouble accessing the booking system." });
     }
 });
+// 1. OWNER ACTION: Add a new room via Dashboard
+app.post('/api/add-room', (req, res) => {
+    const { hotel_id, room_type, price, total_rooms, image_url, description } = req.body;
+    
+    // Using your exact column names: price, total_rooms, available_rooms
+    const query = `
+        INSERT INTO rooms (hotel_id, room_type, price, total_rooms, available_rooms, image_url, description) 
+        VALUES (?, ?, ?, ?, ?, ?, ?)`;
+    
+    // Defaulting available_rooms to total_rooms upon creation
+    db.query(query, [hotel_id, room_type, price, total_rooms, total_rooms, image_url, description], (err, result) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.status(200).json({ message: "Success: Room added to database." });
+    });
+});
+
+// Get rooms using the hotel SLUG instead of ID
+app.get('/api/hotel-rooms-by-slug/:slug', (req, res) => {
+    const slug = req.params.slug;
+    const sql = `
+        SELECT r.* FROM rooms r
+        JOIN hotels h ON r.hotel_id = h.hotel_id
+        WHERE h.slug = ?`;
+
+    db.query(sql, [slug], (err, results) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(results);
+    });
+});
+app.post('/api/hotels/update-info', async (req, res) => {
+    const { hotel_id, background_image } = req.body;
+
+    // 1. Validation to prevent empty values breaking the query
+    if (!hotel_id || !background_image) {
+        return res.status(400).json({ success: false, error: "Hotel ID or Image URL is missing." });
+    }
+
+    // 2. PostgreSQL uses $1, $2 instead of ?
+    const sql = "UPDATE hotels SET background_image = $1 WHERE hotel_id = $2";
+    
+    try {
+        // Using your db connection (assuming 'pg' or 'pool')
+        await db.query(sql, [background_image, hotel_id]); 
+        res.json({ success: true, message: "Luxury background updated in PostgreSQL." });
+    } catch (err) {
+        console.error("Postgres Error:", err);
+        res.status(500).json({ success: false, error: err.detail || err.message });
+    }
+});
+
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });

@@ -3,65 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>StaySmart</title>
+  <title>StaySmart | Luxury Hospitality</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 
   <style>
-    /* VOICE AI ORB STYLES */
-    .ai-orb {
-        width: 100px;
-        height: 100px;
-        background: radial-gradient(circle, #DAA520 0%, #000 80%);
-        border-radius: 50%;
-        margin: 0 auto;
-        cursor: pointer;
-        position: relative;
-        transition: 0.5s;
-        border: 1px solid rgba(218, 165, 32, 0.3);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .ai-orb.listening {
-        box-shadow: 0 0 50px #DAA520;
-        transform: scale(1.1);
-        border: 1px solid #DAA520;
-    }
-    .pulse-ring {
-        position: absolute;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        border: 2px solid #DAA520;
-        border-radius: 50%;
-        animation: orb-pulse 2s infinite;
-        opacity: 0;
-        pointer-events: none;
-    }
-    @keyframes orb-pulse {
-        0% { transform: scale(1); opacity: 0.5; }
-        100% { transform: scale(2.5); opacity: 0; }
-    }
-    #aiStatus {
-        font-size: 11px; 
-        letter-spacing: 3px; 
-        margin-top: 25px; 
-        font-weight: 300; 
-        color: #fff;
-        text-transform: uppercase;
-    }
-    #aiTranscript {
-        opacity: 0.6; 
-        font-style: italic; 
-        font-size: 14px; 
-        margin-top: 12px; 
-        min-height: 20px; 
-        font-weight: 300; 
-        color: #DAA520;
-    }
     html { scroll-behavior: smooth; }
+    /* Keeping search styles clean */
+    .search-box input::placeholder { color: rgba(255,255,255,0.5); }
+    .hotel-card:hover { border-color: #DAA520 !important; transition: 0.3s; }
   </style>
 </head>
 <body>
@@ -88,9 +40,9 @@
   <div class="hero-content" data-aos="fade-up">
     <span class="hero-label">THE FUTURE OF HOSPITALITY</span>
     <h1>ARRIVE WITHOUT<br>EFFORT</h1>
-    <p>AI-DRIVEN PRECISION. INVISIBLE SERVICE. ABSOLUTE PRESENCE.</p>
+    <p>DIGITAL PRECISION. INVISIBLE SERVICE. ABSOLUTE PRESENCE.</p>
     <div class="hero-action">
-        <a href="#contact" class="btn-luxury">TALK TO CONCIERGE</a>
+        <a href="#contact" class="btn-luxury">EXPLORE DESTINATIONS</a>
     </div>
   </div>
 </section>
@@ -101,8 +53,8 @@
     <span class="section-subtitle">THE NEW STANDARD</span>
     <h2>WHERE TECHNOLOGY<br>DISAPPEARS</h2>
     <p>
-      StaySmart replaces rigid forms with natural dialogue. 
-      We’ve engineered a platform that anticipates your needs, 
+      StaySmart replaces rigid forms with streamlined search. 
+      We’ve engineered a platform that simplifies your journey, 
       allowing the art of hospitality to take center stage.
     </p>
     
@@ -126,10 +78,10 @@
 
 <div class="luxury-bg-wrapper">
   <section id="contact" class="contact" style="padding: 120px 20px; text-align: center; background: #000; position: relative; z-index: 5;">
-    <h2 data-aos="fade-up" style="margin-bottom: 10px; color: #DAA520; font-family: 'Inter', sans-serif; letter-spacing: 2px;">INSTANT CONCIERGE</h2>
-    <p data-aos="fade-up" style="margin-bottom: 50px; opacity: 0.8; color: #ffffff; font-weight: 300;">Experience the future of booking through natural conversation.</p>
+    <h2 data-aos="fade-up" style="margin-bottom: 10px; color: #DAA520; font-family: 'Inter', sans-serif; letter-spacing: 2px;">DIGITAL CONCIERGE</h2>
+    <p data-aos="fade-up" style="margin-bottom: 50px; opacity: 0.8; color: #ffffff; font-weight: 300;">Find your next stay through our curated global network.</p>
     
-    <div class="search-container" data-aos="fade-up" style="margin-bottom: 60px;">
+    <div class="search-container" data-aos="fade-up">
         <div class="search-box" style="display: flex; justify-content: center; gap: 10px; max-width: 600px; margin: 0 auto;">
             <input type="text" id="searchInput" placeholder="WHERE ARE YOU GOING?" 
                    style="background: transparent; border: 1px solid rgba(218, 165, 32, 0.5); color: white; padding: 15px 25px; width: 100%; letter-spacing: 2px; font-family: 'Inter'; outline: none;">
@@ -139,107 +91,52 @@
         <div id="resultsContainer" class="hotel-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 40px; padding: 0 5%;">
             </div>
     </div>
-
-    <div class="voice-assistant-container" data-aos="fade-up" style="position: relative; z-index: 10;">
-        <div class="ai-orb" id="voiceTrigger" style="margin: 0 auto;">
-            <div class="pulse-ring"></div>
-            <div style="width: 8px; height: 8px; background: #DAA520; border-radius: 50%; box-shadow: 0 0 10px #DAA520;"></div>
-        </div>
-        
-        <h2 id="aiStatus" style="color: #DAA520; margin-top: 20px; font-size: 14px; letter-spacing: 3px;">TAP TO START CONVERSATION</h2>
-        <p id="aiTranscript" style="color: #fff; opacity: 0.6; font-style: italic; margin-top: 10px;"></p>
-    </div>
   </section>
 </div>
 
 <footer>
-  <p>© 2025 StaySmart — AI Hotel Booking Platform</p>
+  <p>© 2026 StaySmart — Premier Hotel Booking Platform</p>
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
 <script>AOS.init({ duration: 900, once: true });</script>
 
 <script>
-    const orb = document.getElementById('voiceTrigger');
-    const status = document.getElementById('aiStatus');
-    const transcript = document.getElementById('aiTranscript');
-    const synth = window.speechSynthesis;
-
-    function getAIResponse(userInput) {
-        const input = userInput.toLowerCase();
-        if (input.includes("paris")) return "I have found three luxury penthouses in Paris with Eiffel Tower views. Shall I reserve a viewing?";
-        if (input.includes("pool")) return "I recommend the Azure Resort for its world-class infinity pool.";
-        if (input.includes("budget") || input.includes("price")) return "We have a curated boutique collection for various budgets. What is your range?";
-        if (input.includes("hello") || input.includes("hi")) return "Welcome to StaySmart. I am your personal concierge. Where would you like to escape to?";
-        return "That sounds wonderful. Let me search our exclusive network for the best options.";
-    }
-
-    function speak(text) {
-        if (synth.speaking) { synth.cancel(); }
-        const utterance = new SpeechSynthesisUtterance(text);
-        const voices = synth.getVoices();
-        utterance.voice = voices.find(v => v.name.includes('Google') || v.name.includes('Premium')) || voices[0];
-        utterance.rate = 0.9;
-        synth.speak(utterance);
-    }
-
-    const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (Recognition) {
-        const rec = new Recognition();
-        rec.lang = 'en-US';
-        orb.onclick = () => {
-            try {
-                rec.start();
-                orb.classList.add('listening');
-                status.innerText = "STAYSMART IS LISTENING...";
-                synth.cancel();
-            } catch(e) {}
-        };
-        rec.onresult = (event) => {
-            const userText = event.results[0][0].transcript;
-            transcript.innerText = `"${userText}"`;
-            status.innerText = "ANALYZING...";
-            const responseText = getAIResponse(userText);
-            setTimeout(() => {
-                orb.classList.remove('listening');
-                status.innerText = responseText.toUpperCase();
-                speak(responseText);
-            }, 1500);
-        };
-    }
     async function executeSearch() {
-    const query = document.getElementById('searchInput').value;
-    const container = document.getElementById('resultsContainer');
-    
-    if (!query) return;
+        const query = document.getElementById('searchInput').value;
+        const container = document.getElementById('resultsContainer');
+        
+        if (!query) return;
 
-    try {
-        const response = await fetch(`http://localhost:3000/api/search?location=${query}`);
-        const data = await response.json();
+        try {
+            // Updated to your local API route
+            const response = await fetch(`http://localhost:3000/api/search?location=${query}`);
+            const data = await response.json();
 
-        container.innerHTML = ""; // Clear old results
+            container.innerHTML = ""; 
 
-        if (data.results.length === 0) {
-            container.innerHTML = "<p style='color: white; opacity: 0.5;'>No properties found in this location.</p>";
-            return;
+            if (data.results.length === 0) {
+                container.innerHTML = "<p style='color: white; opacity: 0.5;'>No properties found in this location.</p>";
+                return;
+            }
+
+            data.results.forEach(hotel => {
+                container.innerHTML += `
+                    <div class="hotel-card" style="background: #141414; padding: 30px; border: 1px solid rgba(218, 165, 32, 0.2); text-align: left;">
+                        <h3 style="color: #DAA520; margin-bottom: 10px; letter-spacing: 1px;">${hotel.hotel_name.toUpperCase()}</h3>
+                        <p style="font-size: 12px; color: white; opacity: 0.7; margin-bottom: 20px;">📍 ${hotel.location.toUpperCase()}</p>
+                        <a href="hotel-details.html?slug=${hotel.slug}" 
+                           style="color: #DAA520; text-decoration: none; font-size: 10px; letter-spacing: 2px; border-bottom: 1px solid #DAA520; padding-bottom: 5px;">
+                           VIEW PROPERTY →
+                        </a>
+                    </div>
+                `;
+            });
+        } catch (err) {
+            console.error("Search Error:", err);
+            container.innerHTML = "<p style='color: #DAA520;'>Unable to connect to the booking server.</p>";
         }
-
-        data.results.forEach(hotel => {
-            container.innerHTML += `
-                <div class="hotel-card" style="background: #141414; padding: 30px; border: 1px solid rgba(218, 165, 32, 0.2); text-align: left;">
-                    <h3 style="color: #DAA520; margin-bottom: 10px; letter-spacing: 1px;">${hotel.hotel_name.toUpperCase()}</h3>
-                    <p style="font-size: 12px; color: white; opacity: 0.7; margin-bottom: 20px;">📍 ${hotel.location.toUpperCase()}</p>
-                    <a href="hotel-details.html?slug=${hotel.slug}" 
-                       style="color: #DAA520; text-decoration: none; font-size: 10px; letter-spacing: 2px; border-bottom: 1px solid #DAA520; padding-bottom: 5px;">
-                       VIEW PROPERTY →
-                    </a>
-                </div>
-            `;
-        });
-    } catch (err) {
-        console.error("Search Error:", err);
     }
-}
 </script>
 
 </body>
