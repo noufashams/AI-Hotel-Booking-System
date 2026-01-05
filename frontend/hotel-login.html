@@ -49,13 +49,15 @@
     document.getElementById('loginForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         
-        // This matches your HTML IDs: emailInput and passwordInput
         const email = document.getElementById('emailInput').value;
         const password = document.getElementById('passwordInput').value;
         const errorMsg = document.getElementById('error-msg');
 
+        errorMsg.style.display = "none";
+
         try {
-            const response = await fetch('http://localhost:3000/api/hotel/login', {
+            // Using your standard login endpoint
+            const response = await fetch('http://localhost:3000/api/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password })
@@ -64,21 +66,25 @@
             const data = await response.json();
 
             if (data.success) {
-                // Save session info
-                localStorage.setItem('hotelName', data.hotelName);
-                localStorage.setItem('hotelId', data.hotelId);
-                localStorage.setItem('userRole', 'hotel'); 
+                // 1. Store the specific role (admin, owner, or staff)
+                localStorage.setItem('userRole', data.role);
                 
-                // Redirect to the hotel dashboard
-                window.location.href = "hotel-dashboard.html";
+                // 2. Store Hotel ID only if it exists (Admins don't have a hotelId)
+                if (data.hotelId) {
+                    localStorage.setItem('hotelId', data.hotelId);
+                    localStorage.setItem('hotelName', data.hotelName || "Hotel Partner");
+                }
+
+                // 3. Use the redirect path sent by the server
+                window.location.href = data.redirect;
             } else {
-                // Show the specific error (Invalid or Pending) on the screen
                 errorMsg.style.display = "block";
-                errorMsg.innerText = data.message.toUpperCase();
+                errorMsg.innerText = (data.message || "INVALID LOGIN").toUpperCase();
             }
         } catch (err) {
             console.error("Login error:", err);
-            alert("Server connection failed. Make sure app.js is running.");
+            errorMsg.style.display = "block";
+            errorMsg.innerText = "SERVER CONNECTION FAILED";
         }
     });
 </script>

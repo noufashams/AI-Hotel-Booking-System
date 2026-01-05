@@ -1,55 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script>
+    if (localStorage.getItem('userRole') !== 'admin') {
+        window.location.href = 'hotel-login.html'; // Kick them out if not admin
+    }
+</script>
     <meta charset="UTF-8">
     <title>STAYSMART | ADMIN PANEL</title>
     <link rel="stylesheet" href="style.css">
     <style>
         :root { --accent: #DAA520; --bg: #0a0a0a; --panel: #141414; }
-        body { background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; display: flex; height: 100vh; overflow: hidden; }
+        body { background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; display: flex; height: 100vh; overflow: hidden; margin:0; }
         
-        /* Sidebar Navigation */
         .sidebar { width: 260px; background: var(--panel); border-right: 1px solid rgba(255,255,255,0.05); padding: 40px 20px; }
         .nav-item { padding: 15px; color: rgba(255,255,255,0.5); text-decoration: none; display: block; letter-spacing: 2px; font-size: 11px; transition: 0.3s; }
         .nav-item.active { color: #fff; border-left: 2px solid var(--accent); background: rgba(255,255,255,0.02); }
 
-        /* Main Content Area */
         .main-content { flex: 1; padding: 60px; overflow-y: auto; }
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 40px; }
         .stat-card { background: var(--panel); padding: 25px; border: 1px solid rgba(255,255,255,0.05); }
-        .stat-card h3 { font-size: 10px; opacity: 0.5; letter-spacing: 2px; }
-        .stat-card p { font-size: 24px; margin-top: 10px; font-weight: 300; }
+        .stat-card h3 { font-size: 10px; opacity: 0.5; letter-spacing: 2px; margin: 0; }
+        .stat-card p { font-size: 24px; margin-top: 10px; font-weight: 300; margin-bottom: 0; }
 
-        /* Review Table */
         .data-table { width: 100%; border-collapse: collapse; background: var(--panel); }
-        .data-table th { text-align: left; padding: 20px; font-size: 10px; color: rgba(255,255,255,0.3); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .data-table th { text-align: left; padding: 20px; font-size: 10px; color: rgba(255,255,255,0.3); border-bottom: 1px solid rgba(255,255,255,0.05); letter-spacing: 1px; }
         .data-table td { padding: 20px; font-size: 13px; border-bottom: 1px solid rgba(255,255,255,0.05); }
         
-        .btn-view { color: var(--accent); cursor: pointer; text-decoration: underline; font-size: 11px; }
-        .btn-approve { background: #fff; color: #000; border: none; padding: 8px 16px; font-size: 10px; letter-spacing: 1px; cursor: pointer; }
+        .btn-view { color: var(--accent); cursor: pointer; text-decoration: underline; font-size: 11px; text-transform: uppercase; }
+        .btn-approve { background: #fff; color: #000; border: none; padding: 8px 16px; font-size: 10px; letter-spacing: 1px; cursor: pointer; transition: 0.3s; }
+        .btn-approve:hover { background: var(--accent); color: #fff; }
         .btn-reject { background: transparent; color: #ff4444; border: 1px solid #ff4444; padding: 7px 15px; font-size: 10px; cursor: pointer; margin-left: 10px; }
+        
+        .auth-logo { font-size: 20px; letter-spacing: 5px; color: var(--accent); font-weight: bold; text-decoration: none; }
     </style>
 </head>
 <body>
 
     <aside class="sidebar">
-        <div class="auth-logo" style="margin-bottom: 60px;">STAYSMART</div>
+        <a href="index.html" class="auth-logo" style="display:block; margin-bottom: 60px;">STAYSMART</a>
         <nav>
             <a href="#" class="nav-item active">COMPLIANCE QUEUE</a>
             <a href="#" class="nav-item">VERIFIED HOTELS</a>
             <a href="#" class="nav-item">SYSTEM LOGS</a>
-            <a href="#" class="nav-item">SETTINGS</a>
         </nav>
     </aside>
 
     <main class="main-content">
         <header style="margin-bottom: 40px;">
-            <h1 style="letter-spacing: 5px; font-weight: 300;">COMPLIANCE COMMAND</h1>
-            <p style="opacity: 0.4; font-size: 12px; margin-top: 10px;">Reviewing pending property credentials</p>
+            <h1 style="letter-spacing: 5px; font-weight: 300; margin: 0;">COMPLIANCE COMMAND</h1>
+            <p style="opacity: 0.4; font-size: 12px; margin-top: 10px;">Reviewing pending property credentials from 'hotels' table</p>
         </header>
 
         <div class="stats-grid">
-            <div class="stat-card"><h3>PENDING</h3><p>12</p></div>
+            <div class="stat-card"><h3>PENDING</h3><p id="pendingCount">0</p></div>
             <div class="stat-card"><h3>APPROVED</h3><p>1,240</p></div>
             <div class="stat-card"><h3>REJECTION RATE</h3><p>2.4%</p></div>
         </div>
@@ -58,110 +62,97 @@
             <thead>
                 <tr>
                     <th>HOTEL NAME</th>
-                    <th>LICENSE ID</th>
+                    <th>LOCATION</th>
                     <th>DOCUMENT</th>
-                    <th>SUBMISSION DATE</th>
                     <th>ACTIONS</th>
                 </tr>
             </thead>
             <tbody id="adminTableBody">
-                <tr>
-                    <td>The Ritz Paris</td>
-                    <td>FR-8829-01</td>
-                    <td><span class="btn-view" onclick="viewPDF()">PREVIEW_LICENSE.PDF</span></td>
-                    <td>DEC 25, 2025</td>
-                    <td>
-                        <button class="btn-approve" onclick="handleAction('approve')">APPROVE</button>
-                        <button class="btn-reject" onclick="handleAction('reject')">REJECT</button>
-                    </td>
-                </tr>
-            </tbody>
+                </tbody>
         </table>
     </main>
 
-  <script>
-    // 1. FETCH REAL DATA FROM DATABASE
+<script>
+    // 1. FETCH PENDING HOTELS FROM BACKEND
     async function loadDashboardData() {
         try {
             const response = await fetch('http://localhost:3000/api/admin/pending-properties');
-            const properties = await response.json();
+            const hotels = await response.json();
             
             const tableBody = document.getElementById('adminTableBody');
-            tableBody.innerHTML = ''; // This removes the "Ritz Paris" placeholder
+            tableBody.innerHTML = ''; 
 
-          properties.forEach(hotel => {
-    const row = `
-        <tr>
-            <td>${hotel.hotel_name}</td>
-            <td>${hotel.license_number}</td>
-            <td>
-                <a href="http://localhost:3000/uploads/${hotel.license_filename}" target="_blank" class="btn-view">
-                    VIEW_LICENSE
-                </a>
-            </td>
-            <td>${new Date().toLocaleDateString()}</td>
-            <td>
-                <button class="btn-approve" onclick="handleAction('approve', '${hotel.contact_email}', '${hotel.hotel_name}', '${hotel.id}')">APPROVE</button>
-                <button class="btn-reject" onclick="handleAction('reject', '${hotel.contact_email}', '${hotel.hotel_name}', '${hotel.id}')">REJECT</button>
-            </td>
-        </tr>
-    `;
-    tableBody.innerHTML += row;
-});
-            // Update the "PENDING" count in the stat card
-            document.querySelector('.stat-card p').innerText = properties.length;
+            hotels.forEach(hotel => {
+                const row = `
+                    <tr>
+                        <td><strong>${hotel.hotel_name.toUpperCase()}</strong></td>
+                        <td>${hotel.location ? hotel.location.toUpperCase() : 'N/A'}</td>
+                        <td>
+                            <a href="http://localhost:3000/uploads/${hotel.license_filename}" target="_blank" class="btn-view">
+                                VIEW_LICENSE.PDF
+                            </a>
+                        </td>
+                        <td>
+                            <button class="btn-approve" onclick="handleAction('approve', '${hotel.contact_email}', '${hotel.hotel_name}')">APPROVE</button>
+                            <button class="btn-reject" onclick="handleAction('reject', '${hotel.hotel_id}', '${hotel.hotel_name}')">REJECT</button>
+                        </td>
+                    </tr>
+                `;
+                tableBody.innerHTML += row;
+            });
+            
+            document.getElementById('pendingCount').innerText = hotels.length;
 
         } catch (err) {
             console.error("Dashboard failed to load:", err);
         }
     }
 
-    // 2. VIEW PDF (Opens your uploads folder)
-    function viewPDF() {
-        // This opens the folder where Multer saves files
-        window.open('http://localhost:3000/uploads/', '_blank');
-    }
-
-    // 3. APPROVE ACTION
-    async function handleAction(type, email, hotelName, id) {
-    if (type === 'approve') {
-        // ... (Your existing approval code is fine) ...
-        const response = await fetch('http://localhost:3000/api/approve-hotel', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, hotel_name: hotelName })
-        });
-        const data = await response.json();
-        if (data.success) { alert("Hotel Approved!"); loadDashboardData(); }
-    } 
-    
-    else if (type === 'reject') {
-        // DELETE logic
-        if (confirm(`Are you sure you want to permanently delete ${hotelName}?`)) {
+    // 2. APPROVE OR REJECT ACTION
+    async function handleAction(type, identifier, hotelName) {
+        if (type === 'approve') {
+            const email = identifier;
             try {
-                const response = await fetch(`http://localhost:3000/api/admin/delete-property/${id}`, {
-                    method: 'DELETE'
+                const response = await fetch('http://localhost:3000/api/approve-hotel', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, hotel_name: hotelName })
                 });
                 const data = await response.json();
-                if (data.success) {
-                    alert("Property Deleted.");
-                    loadDashboardData(); // Refresh table
+                if (data.success) { 
+                    alert(`${hotelName} has been approved and notified via email.`); 
+                    loadDashboardData(); 
                 }
-            } catch (error) {
-                console.error("Delete failed:", error);
+            } catch (err) { alert("Error approving hotel."); }
+        } 
+        
+        else if (type === 'reject') {
+            const hotel_id = identifier;
+            if (confirm(`PERMANENTLY DELETE ${hotelName} FROM SYSTEM?`)) {
+                try {
+                    const response = await fetch(`http://localhost:3000/api/admin/delete-property/${hotel_id}`, {
+                        method: 'DELETE'
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        alert("PROPERTY REMOVED.");
+                        loadDashboardData();
+                    }
+                } catch (error) { console.error("Delete failed:", error); }
             }
         }
     }
-}
 
-    // 4. RUN ON STARTUP
+    // 3. STARTUP
     window.onload = loadDashboardData;
 
-    // Security Guard: Check if the person is an admin
+    // 4. TEMP SECURITY BYPASS (Remove this once you have an Admin Login page)
+    /*
     if (localStorage.getItem('userRole') !== 'admin') {
-        alert("UNAUTHORIZED ACCESS. REDIRECTING...");
+        alert("UNAUTHORIZED ACCESS.");
         window.location.href = "hotel-login.html"; 
     }
+    */
 </script>
 </body>
 </html>

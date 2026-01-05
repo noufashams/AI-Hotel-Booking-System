@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>StaySmart | Hotel Details</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { background: #000; color: #fff; font-family: 'Inter', sans-serif; }
+        .hotel-hero { height: 60vh; display: flex; align-items: center; justify-content: center; text-align: center; border-bottom: 1px solid rgba(218,165,32,0.2); }
+        .hotel-title { font-size: 3rem; letter-spacing: 8px; color: #DAA520; text-transform: uppercase; }
+        .room-section { padding: 80px 10%; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .room-card { background: #111; padding: 30px; border: 1px solid rgba(255,255,255,0.05); }
+        /* Reuse your AI Orb styles here */
+        /* Add these inside your <style> tag */
+.ai-orb {
+    width: 100px; height: 100px;
+    background: radial-gradient(circle, #DAA520 0%, #000 80%);
+    border-radius: 50%; margin: 0 auto; cursor: pointer;
+    position: relative; transition: 0.5s;
+    border: 1px solid rgba(218, 165, 32, 0.3);
+    display: flex; align-items: center; justify-content: center;
+}
+.ai-orb.listening { box-shadow: 0 0 50px #DAA520; transform: scale(1.1); }
+.pulse-ring {
+    position: absolute; width: 100%; height: 100%;
+    border: 2px solid #DAA520; border-radius: 50%;
+    animation: orb-pulse 2s infinite; opacity: 0;
+}
+@keyframes orb-pulse {
+    0% { transform: scale(1); opacity: 0.5; }
+    100% { transform: scale(2.5); opacity: 0; }
+}
+    </style>
+    
+</head>
+<body>
+
+    <section class="hotel-hero">
+        <div>
+            <h1 id="displayHotelName">LOADING...</h1>
+            <p id="displayLocation" style="letter-spacing: 4px; opacity: 0.6;"></p>
+        </div>
+    </section>
+
+    <div id="roomContainer" class="room-section">
+    </div>
+
+<section style="padding: 100px 20px; text-align: center; background: #000; border-top: 1px solid rgba(218, 165, 32, 0.1);">
+    <div class="voice-assistant-container" data-aos="fade-up">
+        <div class="ai-orb" id="voiceTrigger" style="margin: 0 auto;">
+            <div class="pulse-ring"></div>
+            <div style="width: 8px; height: 8px; background: #DAA520; border-radius: 50%; box-shadow: 0 0 10px #DAA520;"></div>
+        </div>
+        
+        <h2 id="aiStatus" style="color: #DAA520; margin-top: 25px; font-size: 11px; letter-spacing: 3px; font-weight: 300;">
+            TALK TO OUR BOOKING CONCIERGE
+        </h2>
+        <p id="aiTranscript" style="color: #fff; opacity: 0.5; font-style: italic; margin-top: 10px; font-size: 14px; min-height: 20px;">
+            "Are there any Deluxe rooms left?"
+        </p>
+    </div>
+</section>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', async () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const slug = urlParams.get('slug');
+    const synth = window.speechSynthesis;
+
+    if (!slug) {
+        window.location.href = 'index.html';
+        return;
+    }
+
+    // --- PART 1: LOAD HOTEL & ROOM DATA ---
+    try {
+        const response = await fetch(`http://localhost:3000/api/hotels/details/${slug}`);
+        const data = await response.json();
+
+        if (data.success) {
+            const { hotel, rooms } = data;
+            document.getElementById('displayHotelName').innerText = hotel.hotel_name;
+            document.getElementById('displayLocation').innerText = hotel.location;
+            
+            const roomContainer = document.getElementById('roomContainer');
+            roomContainer.innerHTML = rooms.length ? "" : "<p>No rooms available.</p>";
+
+            rooms.forEach(room => {
+                roomContainer.innerHTML += `
+                    <div class="room-card">
+                        <h3 style="color: #DAA520; letter-spacing: 2px;">${room.room_type.toUpperCase()}</h3>
+                        <p style="opacity: 0.6; font-size: 14px;">${room.description || 'Luxury accommodations.'}</p>
+                        <div style="margin-top: 20px; display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 1.5rem; font-weight: bold;">$${room.price}</span>
+                            <button class="btn-luxury" style="padding: 10px 20px; font-size: 10px;">BOOK NOW</button>
+                        </div>
+                    </div>`;
+            });
+            localStorage.setItem('activeHotelId', hotel.hotel_id);
+        }
+    } catch (err) {
+        console.error("Error loading details:", err);
+    }
+
+    // --- PART 2: VOICE AI LOGIC ---
+    const orb = document.getElementById('voiceTrigger');
+    const status = document.getElementById('aiStatus');
+    const transcript = document.getElementById('aiTranscript');
+    const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (Recognition) {
+        const rec = new Recognition();
+
+        orb.onclick = () => {
+            rec.start();
+            orb.classList.add('listening');
+            status.innerText = "LISTENING...";
+            if (synth.speaking) synth.cancel();
+        };
+
+        rec.onresult = async (event) => {
+            const userText = event.results[0][0].transcript;
+            transcript.innerText = `"${userText}"`;
+            orb.classList.remove('listening');
+            status.innerText = "THINKING...";
+
+            // Send to your backend AI route
+            try {
+                const response = await fetch('http://localhost:3000/api/ai/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        message: userText, 
+                        hotelId: localStorage.getItem('activeHotelId') 
+                    })
+                });
+                const aiData = await response.json();
+                status.innerText = "CONCIERGE RESPONDING...";
+                speak(aiData.reply);
+            } catch (err) {
+                status.innerText = "CONNECTION ERROR";
+            }
+        };
+    }
+
+    function speak(text) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 0.95;
+        synth.speak(utterance);
+        // Update UI text once speaking starts
+        utterance.onstart = () => { status.innerText = text.toUpperCase(); };
+    }
+});
+    </script>
+</body>
+</html>

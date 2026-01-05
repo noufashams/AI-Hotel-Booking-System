@@ -4,100 +4,200 @@
     <meta charset="UTF-8">
     <title>STAYSMART | REGISTER PROPERTY</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Specific fixes for the overlapping layout */
+        .auth-container.signup-wide {
+            max-width: 800px;
+            width: 95%;
+        }
+        
+        .input-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 25px; /* Adds space between rows */
+        }
+
+        .input-group {
+            flex: 1; /* Makes each input take equal width */
+            position: relative;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px 0;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #333;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .input-group label {
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            transition: 0.3s;
+            font-size: 10px;
+            letter-spacing: 2px;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        /* Label stays up when input is focused or filled */
+        .input-group input:focus ~ label,
+        .input-group input:valid ~ label {
+            top: -20px;
+            color: #DAA520;
+        }
+
+        .custom-file-label {
+            border: 1px solid #333;
+            padding: 10px;
+            display: block;
+            text-align: center;
+            cursor: pointer;
+            font-size: 10px;
+            letter-spacing: 1px;
+            color: #888;
+            height: 40px;
+            line-height: 20px;
+        }
+
+        .btn-auth {
+            width: 100%;
+            padding: 15px;
+            background: #fff;
+            color: #000;
+            border: none;
+            letter-spacing: 3px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body class="auth-page">
     <div class="auth-container signup-wide">
-        <a href="index.html" class="auth-logo">STAYSMART</a>
+        <a href="index.html" class="auth-logo" style="display: block; text-align: center; margin-bottom: 40px; text-decoration: none; color: #DAA520; letter-spacing: 10px;">STAYSMART</a>
         
         <div class="auth-box">
-            <h1>REGISTER PROPERTY</h1>
+            <h1 style="text-align: center; letter-spacing: 5px; margin-bottom: 40px; font-weight: 300;">REGISTER PROPERTY</h1>
             
-            <form id="registrationForm" enctype="multipart/form-data" method="POST">
+            <form id="registrationForm" enctype="multipart/form-data">
                 
                 <div class="input-row">
                     <div class="input-group">
-                        <input type="text" name="hotel_id" required>
-                        <label>LICENSE NUMBER</label>
+                        <input type="text" name="hotel_name" placeholder=" " required>
+                        <label>HOTEL NAME</label>
                     </div>
-                    
                     <div class="input-group">
-                        <input type="file" id="license-upload" name="license" style="display:none !important;" required>
-                        <div class="custom-file-label" id="upload-trigger">
-                            <span id="file-name">UPLOAD LICENSE PDF</span>
-                        </div>
+                        <input type="text" name="location" placeholder=" " required>
+                        <label>CITY / LOCATION</label>
                     </div>
                 </div>
 
                 <div class="input-row">
                     <div class="input-group">
-                        <input type="text" name="hotel_name" required>
-                        <label>HOTEL NAME</label>
-                    </div>
-                    <div class="input-group">
-                        <input type="email" id="workEmail" name="contact_email" required>
+                        <input type="email" name="contact_email" placeholder=" " required>
                         <label>OFFICIAL WORK EMAIL</label>
                     </div>
+                    <div class="input-group">
+                        <input type="password" name="password" placeholder=" " required>
+                        <label>CREATE PASSWORD</label>
+                    </div>
                 </div>
-<div class="input-group">
-    <input type="password" name="password" required>
-    <label>CREATE SYSTEM PASSWORD</label>
-</div>
-                <div class="input-group">
-                    <input type="text" name="address" required>
+
+                <div class="input-row">
+                    <div class="input-group">
+                        <input type="text" name="contact_phone" placeholder=" " required>
+                        <label>Phone Number</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" name="slug" placeholder="e.g. royal-palms-hotel" required>
+                        <label>Unique URL Slug</label>
+                    </div>
+                </div>
+
+               <!-- <div class="input-group" style="margin-bottom:30px;"> -->
+                    <!-- <input type="text" name="languages_supported" placeholder=" " required> -->
+                    <!-- <label>Languages (comma separated)</label> -->
+                <!-- </div> -->
+
+                <div class="input-group" style="margin-bottom:30px;">
+                    <input type="text" name="description" placeholder=" " required>
+                    <label>Short Property Description</label>
+                </div>
+
+                <div class="input-group" style="margin-bottom: 25px;">
+                    <input type="text" name="address" placeholder=" " required>
                     <label>PHYSICAL PROPERTY ADDRESS</label>
+                </div>
+
+                <div class="input-group" style="margin-bottom: 30px; border-bottom: none;">
+                    <input type="file" id="license-upload" name="license" style="display:none;" required>
+                    <div class="custom-file-label" id="upload-trigger" style="cursor: pointer;">
+                        <span id="file-name">UPLOAD LICENSE PDF</span>
+                    </div>
                 </div>
 
                 <button type="submit" class="btn-auth">SUBMIT FOR VERIFICATION</button>
             </form>
             
-            <div class="auth-footer-container">
-            <p class="compliance-note">OUR COMPLIANCE TEAM WILL REVIEW YOUR CREDENTIALS WITHIN 24H.</p>
+            <div style="text-align: center; margin-top: 30px;">
+                <p style="font-size: 10px; color: #666; letter-spacing: 1px;">OUR COMPLIANCE TEAM WILL REVIEW YOUR CREDENTIALS WITHIN 24H.</p>
+                <p style="font-size: 11px; margin-top: 15px;">ALREADY REGISTERED? <a href="hotel-login.html" style="color: #DAA520; text-decoration: none;">LOGIN HERE</a></p>
+            </div>
         </div>
     </div>
-        </div> 
-    </div>
 
-    <script>
-    const actualInput = document.getElementById('license-upload');
+   <script>
+  const actualInput = document.getElementById('license-upload');
     const fakeButton = document.getElementById('upload-trigger');
     const nameDisplay = document.getElementById('file-name');
     const registrationForm = document.getElementById('registrationForm');
 
-    // 1. THIS WAS MISSING: Make the fake button click the real hidden input
-    fakeButton.addEventListener('click', function() {
-        actualInput.click();
-    });
+    fakeButton.addEventListener('click', () => actualInput.click());
 
-    // 2. Update the text when a file is chosen so the user knows it worked
     actualInput.addEventListener('change', function() {
         if (this.files && this.files[0]) {
-            nameDisplay.innerText = "FILE: " + this.files[0].name;
-            nameDisplay.style.color = "#DAA520"; // Change to gold color
+            nameDisplay.innerText = "FILE: " + this.files[0].name.toUpperCase();
+            nameDisplay.style.color = "#DAA520"; 
         }
     });
 
-    // 3. The Submit Logic
     registrationForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         
-        const formData = new FormData(registrationForm);
+        // 1. Validation Check: Ensure a file is selected
+        if (!actualInput.files[0]) {
+            alert("Please upload your License PDF.");
+            return;
+        }
 
+        const formData = new FormData(this);
+        
         try {
+            // Using localhost instead of 127.0.0.1 can sometimes solve CORS issues on Mac
             const response = await fetch('http://localhost:3000/api/register-property', {
                 method: 'POST',
                 body: formData 
             });
 
-            if (response.ok) {
-                alert("Application Submitted! Check pgAdmin properties table.");
-                window.location.href = "index.html";
+            const data = await response.json();
+            
+            if (response.ok && data.success) {
+                alert("APPLICATION SUBMITTED SUCCESSFULLY!");
+                window.location.href = "hotel-login.html"; // Redirect to login
             } else {
-                alert("Submission failed. Please try again.");
+                // This will show you exactly what the backend found wrong (e.g., Duplicate Slug)
+                alert("SUBMISSION FAILED: " + (data.message || "Server rejected the data."));
             }
         } catch (err) {
-            alert("Error connecting to database. Is your backend running?");
+            console.error("Fetch Error:", err);
+            alert("CONNECTION ERROR: Make sure your server (node app.js) is running.");
         }
     });
 </script>
 </body>
-</html>
+</html> 

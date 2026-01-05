@@ -8,60 +8,108 @@
         :root { --accent: #DAA520; --bg: #0a0a0a; --panel: #141414; }
         body { background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; margin: 0; display: flex; height: 100vh; }
         
-        /* Sidebar */
-        .sidebar { width: 260px; background: var(--panel); border-right: 1px solid rgba(255,255,255,0.05); padding: 40px 20px; }
+        .sidebar { width: 260px; background: var(--panel); border-right: 1px solid rgba(255,255,255,0.05); padding: 40px 20px; display: flex; flex-direction: column; }
         .nav-item { padding: 15px; color: rgba(255,255,255,0.5); text-decoration: none; display: block; letter-spacing: 2px; font-size: 11px; transition: 0.3s; }
-        .nav-item:hover { color: var(--accent); }
-        .logout-btn { margin-top: 50px; color: #ff4444; cursor: pointer; border: none; background: none; font-size: 11px; letter-spacing: 2px; }
+        .nav-item:hover, .nav-item.active { color: var(--accent); background: rgba(218, 165, 32, 0.05); }
+        .logout-btn { margin-top: auto; padding: 20px; color: #ff4444; cursor: pointer; border: none; background: none; font-size: 11px; letter-spacing: 2px; text-align: left; }
 
-        /* Main Content */
         .main-content { flex: 1; padding: 60px; overflow-y: auto; }
-        .status-badge { display: inline-block; padding: 5px 15px; border: 1px solid #00ff00; color: #00ff00; font-size: 10px; letter-spacing: 2px; margin-top: 10px; }
+        .status-badge { display: inline-block; padding: 5px 15px; border: 1px solid var(--accent); color: var(--accent); font-size: 10px; letter-spacing: 2px; margin-top: 10px; text-transform: uppercase; }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 40px; }
+        .stat-card { background: var(--panel); padding: 30px; border: 1px solid rgba(255,255,255,0.05); transition: 0.3s; }
+        .stat-card:hover { border-color: var(--accent); }
+        .stat-card h3 { font-size: 10px; letter-spacing: 2px; opacity: 0.5; margin: 0; }
+        .stat-card p { font-size: 28px; font-weight: 300; margin: 15px 0 0 0; }
+
+        .action-section { margin-top: 40px; background: var(--panel); border: 1px solid rgba(255,255,255,0.05); padding: 30px; }
+        .btn-gold { background: var(--accent); color: #000; border: none; padding: 12px 25px; font-size: 10px; letter-spacing: 2px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-right: 10px; }
+        .btn-gold:hover { background: #fff; }
     </style>
 </head>
 <body>
 
     <aside class="sidebar">
-        <div style="letter-spacing: 5px; font-weight: bold; margin-bottom: 60px;">STAYSMART</div>
-        <nav>
-            <a href="#" class="nav-item">OVERVIEW</a>
-            <a href="#" class="nav-item">ROOM MANAGEMENT</a>
-            <a href="#" class="nav-item">BOOKINGS</a>
-            <button class="logout-btn" onclick="logout()">LOGOUT</button>
+        <div style="letter-spacing: 5px; font-weight: bold; margin-bottom: 60px; color: var(--accent);">STAYSMART</div>
+        <nav style="flex: 1;">
+            <a href="#" class="nav-item active">OVERVIEW</a>
+            <a href="manage-rooms.html" class="nav-item">ROOM MANAGEMENT</a>
+            <a href="manage-staff.html" class="nav-item">STAFF USERS</a>
+            <a href="view-bookings.html" class="nav-item">BOOKINGS</a>
         </nav>
+        <button class="logout-btn" onclick="logout()">LOGOUT</button>
     </aside>
 
     <main class="main-content">
         <header>
-            <h1 id="welcomeText" style="letter-spacing: 5px; font-weight: 300;">Welcome, Hotel</h1>
-            <div class="status-badge">VERIFIED PROPERTY</div>
+            <h1 id="welcomeText" style="letter-spacing: 5px; font-weight: 300; margin: 0;">WELCOME, PARTNER</h1>
+            <div class="status-badge" id="hotelStatus">VERIFIED PROPERTY</div>
+            <p id="hotelIdDisplay" style="font-size: 10px; opacity: 0.3; margin-top: 10px;">ID: --</p>
         </header>
 
-        <section style="margin-top: 40px;">
-            <div style="background: var(--panel); padding: 30px; border: 1px solid rgba(255,255,255,0.05);">
-                <h3 style="font-size: 12px; letter-spacing: 2px; opacity: 0.5;">PROPERTY OVERVIEW</h3>
-                <p>Manage your hotel details, upload room photos, and track guest stays from this command center.</p>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>TOTAL ROOMS</h3>
+                <p id="roomCount">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>ACTIVE BOOKINGS</h3>
+                <p id="bookingCount">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>STAFF MEMBERS</h3>
+                <p id="staffCount">0</p>
+            </div>
+        </div>
+
+        <section class="action-section">
+            <h3 style="font-size: 12px; letter-spacing: 2px; opacity: 0.5; margin-bottom: 20px;">QUICK ACTIONS</h3>
+            <div style="display: flex; gap: 15px;">
+                <button class="btn-gold" onclick="window.location.href='manage-rooms.html'">+ ADD NEW ROOM</button>
+                <button class="btn-gold" onclick="window.location.href='manage-staff.html'">+ REGISTER STAFF</button>
             </div>
         </section>
     </main>
 
     <script>
-        // 1. SECURITY CHECK (Run immediately)
-        const hotelId = localStorage.getItem('hotelId');
-        const hotelName = localStorage.getItem('hotelName');
-        const userRole = localStorage.getItem('userRole');
+        // Use DOMContentLoaded to ensure UI updates as soon as the page is ready
+        document.addEventListener('DOMContentLoaded', () => {
+    const hotelId = localStorage.getItem('hotelId');
+    const userRole = localStorage.getItem('userRole');
+    // ADD THIS LINE:
+    const hotelName = localStorage.getItem('hotelName'); 
 
-        if (!hotelId || userRole !== 'hotel') {
-            alert("Access Denied. Please log in.");
-            window.location.href = "hotel-login.html";
-        } else {
-            // Update the UI with the actual hotel name
-            document.getElementById('welcomeText').innerText = `WELCOME, ${hotelName.toUpperCase()}`;
+    if (!hotelId || (userRole !== 'hotel' && userRole !== 'staff' && userRole !== 'admin')) {
+        alert("UNAUTHORIZED ACCESS. REDIRECTING TO LOGIN.");
+        window.location.href = "hotel-login.html";
+        return; // Stop execution
+    }
+
+    // Update UI with stored info
+    // This will now use the hotelName variable retrieved above
+    document.getElementById('welcomeText').innerText = `WELCOME, ${hotelName ? hotelName.toUpperCase() : 'PARTNER'}`;
+    document.getElementById('hotelIdDisplay').innerText = `PROPERTY ID: ${hotelId}`;
+    
+    loadDashboardStats(hotelId);
+});
+        async function loadDashboardStats(id) {
+            try {
+                // This fetches from the API we are about to add to app.js
+                const response = await fetch(`http://localhost:3000/api/hotel/stats/${id}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('roomCount').innerText = data.totalRooms || 0;
+                    document.getElementById('bookingCount').innerText = data.activeBookings || 0;
+                    document.getElementById('staffCount').innerText = data.staffCount || 0;
+                }
+            } catch (err) {
+                console.error("Stats API not reachable yet.");
+            }
         }
 
-        // 2. LOGOUT FUNCTION
         function logout() {
-            localStorage.clear(); // Clears hotelId, hotelName, etc.
+            localStorage.clear();
             window.location.href = "hotel-login.html";
         }
     </script>

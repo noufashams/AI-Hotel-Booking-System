@@ -129,16 +129,27 @@
     <h2 data-aos="fade-up" style="margin-bottom: 10px; color: #DAA520; font-family: 'Inter', sans-serif; letter-spacing: 2px;">INSTANT CONCIERGE</h2>
     <p data-aos="fade-up" style="margin-bottom: 50px; opacity: 0.8; color: #ffffff; font-weight: 300;">Experience the future of booking through natural conversation.</p>
     
+    <div class="search-container" data-aos="fade-up" style="margin-bottom: 60px;">
+        <div class="search-box" style="display: flex; justify-content: center; gap: 10px; max-width: 600px; margin: 0 auto;">
+            <input type="text" id="searchInput" placeholder="WHERE ARE YOU GOING?" 
+                   style="background: transparent; border: 1px solid rgba(218, 165, 32, 0.5); color: white; padding: 15px 25px; width: 100%; letter-spacing: 2px; font-family: 'Inter'; outline: none;">
+            <button onclick="executeSearch()" class="btn-gold" 
+                    style="background: #DAA520; color: black; border: none; padding: 0 30px; cursor: pointer; font-weight: bold; letter-spacing: 1px; transition: 0.3s;">SEARCH</button>
+        </div>
+        <div id="resultsContainer" class="hotel-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 40px; padding: 0 5%;">
+            </div>
+    </div>
+
     <div class="voice-assistant-container" data-aos="fade-up" style="position: relative; z-index: 10;">
         <div class="ai-orb" id="voiceTrigger" style="margin: 0 auto;">
             <div class="pulse-ring"></div>
             <div style="width: 8px; height: 8px; background: #DAA520; border-radius: 50%; box-shadow: 0 0 10px #DAA520;"></div>
         </div>
         
-        <h2 id="aiStatus">TAP TO START CONVERSATION</h2>
-        <p id="aiTranscript"></p>
+        <h2 id="aiStatus" style="color: #DAA520; margin-top: 20px; font-size: 14px; letter-spacing: 3px;">TAP TO START CONVERSATION</h2>
+        <p id="aiTranscript" style="color: #fff; opacity: 0.6; font-style: italic; margin-top: 10px;"></p>
     </div>
-</section>
+  </section>
 </div>
 
 <footer>
@@ -196,6 +207,40 @@
             }, 1500);
         };
     }
+    async function executeSearch() {
+    const query = document.getElementById('searchInput').value;
+    const container = document.getElementById('resultsContainer');
+    
+    if (!query) return;
+
+    try {
+        const response = await fetch(`http://localhost:3000/api/search?location=${query}`);
+        const data = await response.json();
+
+        container.innerHTML = ""; // Clear old results
+
+        if (data.results.length === 0) {
+            container.innerHTML = "<p style='color: white; opacity: 0.5;'>No properties found in this location.</p>";
+            return;
+        }
+
+        data.results.forEach(hotel => {
+            container.innerHTML += `
+                <div class="hotel-card" style="background: #141414; padding: 30px; border: 1px solid rgba(218, 165, 32, 0.2); text-align: left;">
+                    <h3 style="color: #DAA520; margin-bottom: 10px; letter-spacing: 1px;">${hotel.hotel_name.toUpperCase()}</h3>
+                    <p style="font-size: 12px; color: white; opacity: 0.7; margin-bottom: 20px;">📍 ${hotel.location.toUpperCase()}</p>
+                    <a href="hotel-details.html?slug=${hotel.slug}" 
+                       style="color: #DAA520; text-decoration: none; font-size: 10px; letter-spacing: 2px; border-bottom: 1px solid #DAA520; padding-bottom: 5px;">
+                       VIEW PROPERTY →
+                    </a>
+                </div>
+            `;
+        });
+    } catch (err) {
+        console.error("Search Error:", err);
+    }
+}
 </script>
+
 </body>
 </html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>STAYSMART | BOOKINGS</title>
+    <style>
+        :root { --accent: #DAA520; --bg: #0a0a0a; --panel: #141414; }
+        body { background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; margin: 0; display: flex; height: 100vh; }
+        
+        .sidebar { width: 260px; background: var(--panel); border-right: 1px solid rgba(255,255,255,0.05); padding: 40px 20px; }
+        .nav-item { padding: 15px; color: rgba(255,255,255,0.5); text-decoration: none; display: block; letter-spacing: 2px; font-size: 11px; transition: 0.3s; }
+        .nav-item:hover, .nav-item.active { color: var(--accent); background: rgba(218, 165, 32, 0.05); }
+
+        .main-content { flex: 1; padding: 60px; overflow-y: auto; }
+        
+        .booking-table { width: 100%; border-collapse: collapse; margin-top: 30px; background: var(--panel); }
+        .booking-table th { text-align: left; padding: 20px; font-size: 10px; color: var(--accent); letter-spacing: 2px; border-bottom: 1px solid #333; }
+        .booking-table td { padding: 20px; font-size: 13px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+
+        .status-badge { padding: 5px 10px; border-radius: 3px; font-size: 10px; font-weight: bold; }
+        .status-confirmed { background: rgba(68, 255, 68, 0.1); color: #44ff44; }
+        .status-pending { background: rgba(218, 165, 32, 0.1); color: var(--accent); }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div style="letter-spacing: 5px; font-weight: bold; margin-bottom: 60px; color: var(--accent);">STAYSMART</div>
+        <nav id="sidebarNav">
+            </nav>
+    </aside>
+
+    <main class="main-content">
+        <header style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h1 style="letter-spacing: 5px; margin: 0;">GUEST BOOKINGS</h1>
+                <p style="opacity: 0.4; font-size: 12px; margin-top: 10px;">Manage check-ins and room assignments.</p>
+            </div>
+        </header>
+
+        <table class="booking-table">
+            <thead>
+                <tr>
+                    <th>GUEST NAME</th>
+                    <th>ROOM TYPE</th>
+                    <th>CHECK-IN</th>
+                    <th>CHECK-OUT</th>
+                    <th>STATUS</th>
+                </tr>
+            </thead>
+            <tbody id="bookingTableBody">
+                </tbody>
+        </table>
+    </main>
+
+    <script>
+        const hotelId = localStorage.getItem('hotelId');
+        const userRole = localStorage.getItem('userRole');
+
+        // 1. Dynamic Sidebar based on who is logged in
+        const nav = document.getElementById('sidebarNav');
+        if (userRole === 'hotel') {
+            nav.innerHTML = `
+                <a href="hotel-dashboard.html" class="nav-item">OVERVIEW</a>
+                <a href="manage-rooms.html" class="nav-item">ROOM MANAGEMENT</a>
+                <a href="manage-staff.html" class="nav-item">STAFF USERS</a>
+                <a href="view-bookings.html" class="nav-item active">BOOKINGS</a>
+            `;
+        } else {
+            nav.innerHTML = `
+                <a href="staff-dashboard.html" class="nav-item">OVERVIEW</a>
+                <a href="view-bookings.html" class="nav-item active">BOOKINGS</a>
+            `;
+        }
+
+        // 2. Load Bookings from Database
+        async function fetchBookings() {
+            try {
+                const response = await fetch(`http://localhost:3000/api/bookings/list/${hotelId}`);
+                const bookings = await response.json();
+                
+                const tableBody = document.getElementById('bookingTableBody');
+                tableBody.innerHTML = bookings.map(b => `
+                    <tr>
+                        <td style="font-weight: bold;">${b.guest_name.toUpperCase()}</td>
+                        <td>${b.room_type || 'Standard'}</td>
+                        <td>${new Date(b.check_in_date).toLocaleDateString()}</td>
+                        <td>${new Date(b.check_out_date).toLocaleDateString()}</td>
+                        <td><span class="status-badge status-confirmed">${b.booking_status.toUpperCase()}</span></td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                console.error("Fetch error:", err);
+            }
+        }
+
+        window.onload = fetchBookings;
+    </script>
+</body>
+</html>

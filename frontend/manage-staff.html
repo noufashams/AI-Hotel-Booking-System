@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>STAYSMART | STAFF MANAGEMENT</title>
+    <style>
+        :root { --accent: #DAA520; --bg: #0a0a0a; --panel: #141414; }
+        body { background: var(--bg); color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden; }
+        
+        /* Sidebar */
+        .sidebar { width: 260px; background: var(--panel); border-right: 1px solid rgba(255,255,255,0.05); padding: 40px 20px; display: flex; flex-direction: column; }
+        .sidebar-logo { letter-spacing: 5px; font-weight: bold; margin-bottom: 60px; color: var(--accent); text-decoration: none; }
+        .nav-item { padding: 15px; color: rgba(255,255,255,0.5); text-decoration: none; display: block; letter-spacing: 2px; font-size: 11px; transition: 0.3s; }
+        .nav-item:hover, .nav-item.active { color: var(--accent); background: rgba(218, 165, 32, 0.05); }
+
+        .main-content { flex: 1; padding: 60px; overflow-y: auto; }
+        
+        /* Form Fix: No Overlapping */
+        .staff-form-container { background: var(--panel); padding: 40px; border: 1px solid rgba(255,255,255,0.05); max-width: 500px; margin-top: 30px; }
+        .input-group { margin-bottom: 25px; }
+        .input-group label { display: block; font-size: 10px; letter-spacing: 2px; color: var(--accent); margin-bottom: 10px; text-transform: uppercase; }
+        .input-group input { width: 100%; background: #1a1a1a; border: 1px solid #333; padding: 15px; color: #fff; box-sizing: border-box; outline: none; transition: 0.3s; }
+        .input-group input:focus { border-color: var(--accent); }
+
+        .btn-gold { background: var(--accent); color: #000; border: none; padding: 15px 30px; font-size: 11px; letter-spacing: 2px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.3s; margin-top: 10px; }
+        .btn-gold:hover { background: #fff; }
+
+        /* Table */
+        .staff-list { margin-top: 50px; }
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .data-table th { text-align: left; padding: 15px; font-size: 10px; color: rgba(255,255,255,0.3); border-bottom: 1px solid rgba(255,255,255,0.05); letter-spacing: 2px; }
+        .data-table td { padding: 15px; font-size: 13px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <a href="hotel-dashboard.html" class="sidebar-logo">STAYSMART</a>
+        <nav>
+            <a href="hotel-dashboard.html" class="nav-item">OVERVIEW</a>
+            <a href="manage-rooms.html" class="nav-item">ROOM MANAGEMENT</a>
+            <a href="manage-staff.html" class="nav-item active">STAFF USERS</a>
+            <a href="view-bookings.html" class="nav-item">BOOKINGS</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header>
+            <h1 style="letter-spacing: 5px; font-weight: 300; margin: 0; text-transform: uppercase;">Staff Management</h1>
+            <p style="opacity: 0.4; font-size: 12px; margin-top: 10px;">Register and authorize access for your property team.</p>
+        </header>
+
+        <div class="staff-form-container">
+            <form id="staffForm">
+                <div class="input-group">
+                    <label>Full Name</label>
+                    <input type="text" id="staffName" placeholder="Enter name..." required>
+                </div>
+                <div class="input-group">
+                    <label>Email Address</label>
+                    <input type="email" id="staffEmail" placeholder="email@hotel.com" required>
+                </div>
+                <div class="input-group">
+                    <label>Access Password</label>
+                    <input type="password" id="staffPass" placeholder="Create password" required>
+                </div>
+                <button type="submit" class="btn-gold">AUTHORIZE STAFF MEMBER</button>
+            </form>
+        </div>
+
+        <div class="staff-list">
+            <h3 style="font-size: 12px; letter-spacing: 2px; opacity: 0.5;">ACTIVE TEAM MEMBERS</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>NAME</th>
+                        <th>EMAIL</th>
+                        <th>STATUS</th>
+                    </tr>
+                </thead>
+                <tbody id="staffTableBody">
+                    </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        const hotelId = localStorage.getItem('hotelId');
+        if (!hotelId) window.location.href = "hotel-login.html";
+
+        document.getElementById('staffForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const staffData = {
+                hotel_id: hotelId,
+                name: document.getElementById('staffName').value,
+                email: document.getElementById('staffEmail').value,
+                password: document.getElementById('staffPass').value
+            };
+
+            try {
+                const res = await fetch('http://localhost:3000/api/staff/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(staffData)
+                });
+                if(res.ok) {
+                    alert("Staff Registered!");
+                    location.reload();
+                }
+            } catch (err) { alert("Server Error"); }
+        });
+
+        async function loadStaff() {
+            try {
+                const res = await fetch(`http://localhost:3000/api/staff/list/${hotelId}`);
+                const data = await res.json();
+                document.getElementById('staffTableBody').innerHTML = data.map(s => `
+                    <tr>
+                        <td style="color:var(--accent)">${s.name}</td>
+                        <td>${s.email}</td>
+                        <td style="color:#44ff44; font-size:10px;">● ACTIVE</td>
+                    </tr>
+                `).join('');
+            } catch (e) { console.log("List error"); }
+        }
+        loadStaff();
+    </script>
+</body>
+</html>

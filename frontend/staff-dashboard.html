@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>STAYSMART | STAFF PANEL</title>
+    <style>
+        :root { --accent: #DAA520; --bg: #0a0a0a; --panel: #141414; }
+        body { background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; margin: 0; display: flex; height: 100vh; }
+        .sidebar { width: 260px; background: var(--panel); border-right: 1px solid rgba(255,255,255,0.05); padding: 40px 20px; }
+        .main-content { flex: 1; padding: 60px; }
+        .stat-card { background: var(--panel); padding: 30px; border: 1px solid rgba(255,255,255,0.1); width: 250px; }
+        .accent-text { color: var(--accent); font-size: 24px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <h2 style="color: var(--accent); letter-spacing: 5px;">STAYSMART</h2>
+        <p style="font-size: 10px; opacity: 0.5;">STAFF PORTAL</p>
+        <nav style="margin-top: 50px;">
+            <a href="#" style="color: #fff; text-decoration: none; display: block; padding: 10px 0;">VIEW BOOKINGS</a>
+            <a href="hotel-login.html" style="color: #ff4444; text-decoration: none; display: block; padding: 10px 0; margin-top: 20px;">LOGOUT</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <h1>STAFF OVERVIEW</h1>
+        <div class="stat-card">
+            <p style="font-size: 10px; letter-spacing: 2px;">TODAY'S BOOKINGS</p>
+            <div id="bookingCount" class="accent-text">0</div>
+        </div>
+    </main>
+
+    <script>
+        // Security Check for Staff
+        const role = localStorage.getItem('userRole');
+        if (role !== 'staff') {
+            window.location.href = "hotel-login.html";
+        }
+    </script>
+</body>
+</html>
