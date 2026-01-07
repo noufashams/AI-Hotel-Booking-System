@@ -34,7 +34,7 @@
         <nav style="flex: 1;">
             <a href="#" class="nav-item active">OVERVIEW</a>
             <a href="manage-rooms.html" class="nav-item">ROOM MANAGEMENT</a>
-            <a href="manage-staff.html" class="nav-item">STAFF USERS</a>
+            <!-- <a href="manage-staff.html" class="nav-item">STAFF USERS</a> -->
             <a href="view-bookings.html" class="nav-item">BOOKINGS</a>
         </nav>
         <button class="logout-btn" onclick="logout()">LOGOUT</button>
@@ -66,53 +66,117 @@
             <h3 style="font-size: 12px; letter-spacing: 2px; opacity: 0.5; margin-bottom: 20px;">QUICK ACTIONS</h3>
             <div style="display: flex; gap: 15px;">
                 <button class="btn-gold" onclick="window.location.href='manage-rooms.html'">+ ADD NEW ROOM</button>
-                <button class="btn-gold" onclick="window.location.href='manage-staff.html'">+ REGISTER STAFF</button>
+               
             </div>
         </section>
     </main>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // 1. Get elements
+        const hotelId = localStorage.getItem('hotelId');
+        const userRole = localStorage.getItem('userRole');
+        const hotelName = localStorage.getItem('hotelName'); 
+        const addRoomForm = document.getElementById('addRoomForm');
 
-    <script>
-        // Use DOMContentLoaded to ensure UI updates as soon as the page is ready
-        document.addEventListener('DOMContentLoaded', () => {
-    const hotelId = localStorage.getItem('hotelId');
-    const userRole = localStorage.getItem('userRole');
-    // ADD THIS LINE:
-    const hotelName = localStorage.getItem('hotelName'); 
+        // 2. Auth Check
+        if (!hotelId || (userRole !== 'hotel' && userRole !== 'staff')) {
+            window.location.href = "hotel-login.html";
+            return;
+        }
 
-    if (!hotelId || (userRole !== 'hotel' && userRole !== 'staff' && userRole !== 'admin')) {
-        alert("UNAUTHORIZED ACCESS. REDIRECTING TO LOGIN.");
-        window.location.href = "hotel-login.html";
-        return; // Stop execution
+        // 3. UI Setup
+        document.getElementById('welcomeText').innerText = `WELCOME, ${hotelName ? hotelName.toUpperCase() : 'PARTNER'}`;
+        document.getElementById('hotelIdDisplay').innerText = `PROPERTY ID: ${hotelId}`;
+        loadDashboardStats(hotelId);
+
+        // 4. Open Modal Logic
+        const addBtn = document.querySelector('.btn-gold');
+        addBtn.onclick = (e) => {
+            e.preventDefault();
+            document.getElementById('roomModal').style.display = 'flex';
+        };
+
+        // 5. FORM SUBMISSION LOGIC (Moved inside DOMContentLoaded)
+        if (addRoomForm) {
+            addRoomForm.onsubmit = async (e) => {
+                e.preventDefault();
+                console.log("Submit button clicked!");
+
+                const roomFile = document.getElementById('roomFile').files[0];
+                if (!roomFile) {
+                    alert("Please select an image!");
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append('hotel_id', hotelId);
+                formData.append('room_type', document.getElementById('roomType').value);
+                formData.append('price', document.getElementById('roomPrice').value);
+                formData.append('total_rooms', document.getElementById('roomTotal').value);
+                formData.append('description', document.getElementById('roomDesc').value);
+                formData.append('roomImage', roomFile);
+
+                try {
+                    const response = await fetch('http://localhost:3000/api/add-room', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        alert("✅ SUCCESS: Room added!");
+                        location.reload();
+                    } else {
+                        alert("❌ Error: " + data.error);
+                    }
+                } catch (err) {
+                    console.error("Fetch error:", err);
+                    alert("Connection failed!");
+                }
+            };
+        }
+    });
+
+    function closeModal() {
+        document.getElementById('roomModal').style.display = 'none';
     }
 
-    // Update UI with stored info
-    // This will now use the hotelName variable retrieved above
-    document.getElementById('welcomeText').innerText = `WELCOME, ${hotelName ? hotelName.toUpperCase() : 'PARTNER'}`;
-    document.getElementById('hotelIdDisplay').innerText = `PROPERTY ID: ${hotelId}`;
-    
-    loadDashboardStats(hotelId);
-});
-        async function loadDashboardStats(id) {
-            try {
-                // This fetches from the API we are about to add to app.js
-                const response = await fetch(`http://localhost:3000/api/hotel/stats/${id}`);
-                const data = await response.json();
-
-                if (data.success) {
-                    document.getElementById('roomCount').innerText = data.totalRooms || 0;
-                    document.getElementById('bookingCount').innerText = data.activeBookings || 0;
-                    document.getElementById('staffCount').innerText = data.staffCount || 0;
-                }
-            } catch (err) {
-                console.error("Stats API not reachable yet.");
+    async function loadDashboardStats(id) {
+        try {
+            const response = await fetch(`http://localhost:3000/api/hotel/stats/${id}`);
+            const data = await response.json();
+            if (data.success) {
+                document.getElementById('roomCount').innerText = data.totalRooms || 0;
+                document.getElementById('bookingCount').innerText = data.activeBookings || 0;
+                document.getElementById('staffCount').innerText = data.staffCount || 0;
             }
-        }
+        } catch (err) { console.log("Stats error"); }
+    }
 
-        function logout() {
-            localStorage.clear();
-            window.location.href = "hotel-login.html";
-        }
+    function logout() {
+        localStorage.clear();
+        window.location.href = "hotel-login.html";
+    }
+</script>
+    <div id="roomModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:1000; align-items:center; justify-content:center; backdrop-filter: blur(5px);">
+    <div style="background:var(--panel); padding:40px; border:1px solid var(--accent); width:90%; max-width:500px; position:relative; box-shadow: 0 0 50px rgba(0,0,0,0.5);">
+        <span onclick="closeModal()" style="position:absolute; top:15px; right:20px; cursor:pointer; font-size:24px; color: var(--accent);">&times;</span>
+        <h2 style="color:var(--accent); letter-spacing: 4px; font-weight: 300; margin-bottom:30px;">ADD NEW ROOM</h2>
         
-    </script>
+        <form id="addRoomForm">
+            <input type="text" id="roomType" placeholder="ROOM TYPE (E.G. DELUXE SUITE)" required style="width:100%; padding:15px; margin-bottom:15px; background:#000; border:1px solid #333; color:white; font-size: 11px; letter-spacing: 1px;">
+            
+            <input type="number" id="roomPrice" placeholder="PRICE PER NIGHT ($)" required style="width:100%; padding:15px; margin-bottom:15px; background:#000; border:1px solid #333; color:white; font-size: 11px; letter-spacing: 1px;">
+            
+            <input type="number" id="roomTotal" placeholder="TOTAL ROOMS IN INVENTORY" required style="width:100%; padding:15px; margin-bottom:15px; background:#000; border:1px solid #333; color:white; font-size: 11px; letter-spacing: 1px;">
+            
+            <textarea id="roomDesc" placeholder="ROOM DESCRIPTION" style="width:100%; padding:15px; margin-bottom:15px; background:#000; border:1px solid #333; color:white; height:100px; font-size: 11px; font-family: 'Inter';"></textarea>
+            
+            <label style="display:block; margin-bottom:10px; color:var(--accent); font-size:10px; letter-spacing: 2px;">UPLOAD ROOM IMAGE</label>
+            <input type="file" id="roomFile" accept="image/*" required style="margin-bottom:25px; font-size: 10px; color: #888;">
+            
+            <button type="submit" class="btn-gold" style="width:100%; margin: 0;">SAVE PROPERTY DETAILS</button>
+        </form>
+    </div>
+</div>
 </body>
 </html>

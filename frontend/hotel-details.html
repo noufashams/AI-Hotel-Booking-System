@@ -3,61 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <title>StaySmart | Hotel Details</title>
-    <link rel="stylesheet" href="style.css">
     <style>
-        body { background: #000; color: #fff; font-family: 'Inter', sans-serif; }
-        .hotel-hero { height: 60vh; display: flex; align-items: center; justify-content: center; text-align: center; border-bottom: 1px solid rgba(218,165,32,0.2); }
-        .hotel-title { font-size: 3rem; letter-spacing: 8px; color: #DAA520; text-transform: uppercase; }
-        .room-section { padding: 80px 10%; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
-        .room-card { background: #111; padding: 30px; border: 1px solid rgba(255,255,255,0.05); }
-        /* Reuse your AI Orb styles here */
-        /* Add these inside your <style> tag */
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,700&family=Inter:wght@300;400;600&display=swap');
+
+        body { 
+            background: #050505; 
+            color: #fff; 
+            font-family: 'Inter', sans-serif; 
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* 1. Cinematic Hero Section */
+        .hotel-hero { 
+            height: 85vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            text-align: center; 
+            background-attachment: fixed; /* Parallax effect */
+            background-size: cover !important;
+            background-position: center !important;
+            transition: transform 2s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hotel-title { 
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(3rem, 10vw, 6rem); 
+            letter-spacing: -2px; 
+            color: #fff; 
+            text-transform: none; 
+            margin: 0;
+            font-weight: 400;
+        }
+
+        /* 2. Bespoke Room Grid */
+        /* Update the Room Grid to a single column for a list feel, or keep auto-fit */
+.room-section { 
+    padding: 80px 10%; 
+    display: flex;
+    flex-direction: column; /* This makes it a list */
+    gap: 30px; 
+    background: #050505;
+}
+
+.room-card { 
+    display: flex; 
+    align-items: center;
+    background: #0a0a0a; 
+    border: 1px solid rgba(255,255,255,0.03); 
+    height: 160px; /* Match the JS height */
+    overflow: hidden;
+    margin-bottom: 25px; /* Spacing between rooms */
+    transition: 0.3s ease;
+}
+
+.room-card:hover {
+    border-color: rgba(218, 165, 32, 0.5);
+    background: #0f0f0f;
+}
+
+.room-image-wrapper {
+    width: 200px; /* Small fixed width for the image */
+    height: 100%;
+    flex-shrink: 0; /* Prevents image from squishing */
+}
+
+.room-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.room-info { 
+    padding: 20px 40px; 
+    flex-grow: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* High-End Liquid Gold Orb */
+/* Pure Liquid Gold Orb */
 .ai-orb {
-    width: 100px; height: 100px;
-    background: radial-gradient(circle, #DAA520 0%, #000 80%);
-    border-radius: 50%; margin: 0 auto; cursor: pointer;
-    position: relative; transition: 0.5s;
-    border: 1px solid rgba(218, 165, 32, 0.3);
-    display: flex; align-items: center; justify-content: center;
+    width: 75px; 
+    height: 75px;
+    /* High-end 3D spherical gradient */
+    background: radial-gradient(circle at 35% 35%, #fff5d7 0%, #DAA520 45%, #916f12 100%);
+    border-radius: 50%;
+    margin: 0 auto; 
+    cursor: pointer;
+    border: none; /* Removed all lines/borders */
+    transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
 }
-.ai-orb.listening { box-shadow: 0 0 50px #DAA520; transform: scale(1.1); }
-.pulse-ring {
-    position: absolute; width: 100%; height: 100%;
-    border: 2px solid #DAA520; border-radius: 50%;
-    animation: orb-pulse 2s infinite; opacity: 0;
+
+.ai-orb:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 30px rgba(218, 165, 32, 0.4);
 }
-@keyframes orb-pulse {
-    0% { transform: scale(1); opacity: 0.5; }
-    100% { transform: scale(2.5); opacity: 0; }
+
+/* Luxury Breath Animation */
+.ai-orb.listening {
+    animation: luxury-glow 2.5s infinite ease-in-out;
+}
+
+@keyframes luxury-glow {
+    0% {
+        box-shadow: 0 0 10px rgba(218, 165, 32, 0.4), 0 0 0 0 rgba(218, 165, 32, 0.2);
+        transform: scale(1);
+    }
+    50% {
+        /* The glow expands outward without a visible "line" */
+        box-shadow: 0 0 50px rgba(218, 165, 32, 0.8), 0 0 0 20px rgba(218, 165, 32, 0);
+        transform: scale(1.1);
+    }
+    100% {
+        box-shadow: 0 0 10px rgba(218, 165, 32, 0.4), 0 0 0 0 rgba(218, 165, 32, 0.2);
+        transform: scale(1);
+    }
 }
     </style>
-    
 </head>
 <body>
 
-    <section class="hotel-hero">
-        <div>
-            <h1 id="displayHotelName">LOADING...</h1>
-            <p id="displayLocation" style="letter-spacing: 4px; opacity: 0.6;"></p>
-        </div>
-    </section>
-
-    <div id="roomContainer" class="room-section">
+   <section class="hotel-hero" id="dynamicHero" style="position: relative; background: #0a0a0a; overflow: hidden; height: 70vh;">
+    <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, #000 100%); z-index: 1;"></div>
+    
+    <div style="position: relative; z-index: 2; text-align: center;">
+        <span style="letter-spacing: 6px; font-size: 0.7rem; opacity: 0.8; display: block; margin-bottom: 15px; color: #DAA520;">ESTABLISHED 2026</span>
+        <h1 id="displayHotelName" class="hotel-title" style="margin: 0; font-weight: 300; font-size: clamp(2.5rem, 8vw, 4.5rem);">LOADING...</h1>
+        <div style="width: 50px; height: 1px; background: rgba(218, 165, 32, 0.5); margin: 25px auto;"></div>
+        <p id="displayLocation" style="letter-spacing: 4px; opacity: 0.9; font-size: 11px; text-transform: uppercase;"></p>
     </div>
-
-<section style="padding: 100px 20px; text-align: center; background: #000; border-top: 1px solid rgba(218, 165, 32, 0.1);">
-    <div class="voice-assistant-container" data-aos="fade-up">
-        <div class="ai-orb" id="voiceTrigger" style="margin: 0 auto;">
-            <div class="pulse-ring"></div>
-            <div style="width: 8px; height: 8px; background: #DAA520; border-radius: 50%; box-shadow: 0 0 10px #DAA520;"></div>
-        </div>
+</section>
+        <div id="roomContainer" class="room-section">
+    </div>
+        <section style="padding: 80px 20px; text-align: center; background: #000;">
+    <div class="voice-assistant-container">
+        <div class="ai-orb" id="voiceTrigger"></div>
         
-        <h2 id="aiStatus" style="color: #DAA520; margin-top: 25px; font-size: 11px; letter-spacing: 3px; font-weight: 300;">
-            TALK TO OUR BOOKING CONCIERGE
-        </h2>
-        <p id="aiTranscript" style="color: #fff; opacity: 0.5; font-style: italic; margin-top: 10px; font-size: 14px; min-height: 20px;">
-            "Are there any Deluxe rooms left?"
-        </p>
+        <div style="margin-top: 40px;">
+            <h2 id="aiStatus" style="color: #DAA520; font-size: 10px; letter-spacing: 5px; font-weight: 600; text-transform: uppercase;">
+                Tap the Orb to Speak
+            </h2>
+            <p id="aiTranscript" style="color: #fff; opacity: 0.7; font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.4rem; max-width: 600px; margin: 25px auto; line-height: 1.6;">
+                "How may I assist you today?"
+            </p>
+        </div>
+    </div>
+</section>
     </div>
 </section>
 
@@ -78,7 +175,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         const data = await response.json();
 
         if (data.success) {
+            
             const { hotel, rooms } = data;
+            if (hotel.background_image) {
+        document.getElementById('dynamicHero').style.backgroundImage = `url('${hotel.background_image}')`;
+        document.getElementById('dynamicHero').style.backgroundSize = 'cover';
+        document.getElementById('dynamicHero').style.backgroundPosition = 'center';
+    }
+    
+    document.getElementById('displayHotelName').innerText = hotel.hotel_name;
             document.getElementById('displayHotelName').innerText = hotel.hotel_name;
             document.getElementById('displayLocation').innerText = hotel.location;
             
@@ -88,17 +193,32 @@ document.addEventListener('DOMContentLoaded', async () => {
             const roomContainer = document.getElementById('roomContainer');
             roomContainer.innerHTML = rooms.length ? "" : "<p>No rooms available.</p>";
 
-            rooms.forEach(room => {
-                roomContainer.innerHTML += `
-                    <div class="room-card">
-                        <h3 style="color: #DAA520; letter-spacing: 2px;">${room.room_type.toUpperCase()}</h3>
-                        <p style="opacity: 0.6; font-size: 14px;">${room.description || 'Luxury accommodations.'}</p>
-                        <div style="margin-top: 20px; display: flex; justify-content: space-between; align-items: center;">
-                            <span style="font-size: 1.5rem; font-weight: bold;">$${room.price}</span>
-                            <button class="btn-luxury" style="padding: 10px 20px; font-size: 10px; background: #DAA520; border:none; cursor:pointer;">BOOK NOW</button>
-                        </div>
-                    </div>`;
-            });
+           rooms.forEach(room => {
+    const imageSrc = room.room_image 
+        ? `http://localhost:3000${room.room_image}` 
+        : 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=400';
+
+    roomContainer.innerHTML += `
+        <div class="room-card" style="display: flex; align-items: center; height: 160px; margin-bottom: 20px;">
+            <div style="width: 200px; height: 100%; overflow: hidden; flex-shrink: 0;">
+                <img src="${imageSrc}" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+
+            <div class="room-info" style="flex-grow: 1; padding: 0 30px; display: flex; justify-content: space-between; align-items: center;">
+                <div style="max-width: 60%;">
+                    <h3 style="font-family: 'Playfair Display'; font-size: 1.4rem; margin: 0 0 8px 0;">${room.room_type}</h3>
+                    <p style="opacity: 0.5; font-size: 13px; margin: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                        ${room.description || 'Experience ultimate luxury in our bespoke suites.'}
+                    </p>
+                </div>
+
+                <div style="text-align: right; min-width: 120px;">
+                    <div style="font-size: 1.5rem; color: #DAA520; margin-bottom: 10px;">$${room.price}</div>
+                    <button class="btn-luxury" style="padding: 10px 20px; font-size: 9px;">RESERVE</button>
+                </div>
+            </div>
+        </div>`;
+});
         }
     } catch (err) {
         console.error("Error loading details:", err);

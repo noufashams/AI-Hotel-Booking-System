@@ -30,11 +30,13 @@ db.connect()
   .catch(err => console.error("❌ DATABASE CONNECTION ERROR:", err.message));
 
 // Multer Storage
+// Updated Multer Storage to handle both PDFs and Images
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, 'uploads/'),
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, file.fieldname + '-' + uniqueSuffix + '.pdf');
+    // path.extname(file.originalname) keeps the .jpg or .png from the original file
+    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
   }
 });
 const upload = multer({ storage: storage });
@@ -53,7 +55,13 @@ app.post("/api/register-property", upload.single('license'), async (req, res) =>
         const { hotel_name, location, address, contact_email, password, contact_phone, description, slug } = req.body;
         const fileName = req.file ? req.file.filename : null;
 
-        // --- PASTE THE CODE BELOW THIS LINE ---
+        // 1. BACKEND SLUG CLEANING: 
+        // Even though frontend does it, this ensures the database always gets a clean string.
+        const cleanSlug = slug.toLowerCase().trim()
+            .replace(/[^\w\s-]/g, '') 
+            .replace(/[\s_-]+/g, '-') 
+            .replace(/^-+|-+$/g, '');
+
         const query = `
             INSERT INTO hotels (
                 hotel_name, 
@@ -79,16 +87,24 @@ app.post("/api/register-property", upload.single('license'), async (req, res) =>
             fileName,        // $6
             contact_phone,   // $7
             description,     // $8
-            slug             // $9
+            cleanSlug        // $9 (Using the cleaned slug)
         ];
-        // --- PASTE THE CODE ABOVE THIS LINE ---
 
         await db.query(query, values);
         res.json({ success: true, message: "Registered successfully!" });
 
     } catch (err) {
+        // 2. DUPLICATE CHECK: Catch the error if the slug is already taken
+        if (err.code === '23505') {
+            console.error("❌ REGISTRATION ERROR: Duplicate Slug/Email");
+            return res.status(400).json({ 
+                success: false, 
+                message: "This Hotel Name or Email is already registered. Please try a different name." 
+            });
+        }
+
         console.error("❌ DATABASE ERROR:", err.message);
-        res.status(500).json({ success: false, message: err.message });
+        res.status(500).json({ success: false, message: "Server error during registration." });
     }
 });
 app.post("/api/login", async (req, res) => {
@@ -230,19 +246,7 @@ app.get('/api/staff/list/:hotelId', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
-app.post('/api/rooms/add', async (req, res) => {
-    const { hotel_id, room_type, price, total } = req.body;
-    try {
-        await db.query(
-            "INSERT INTO rooms (hotel_id, room_type, price_per_night, total_rooms, available_rooms) VALUES ($1, $2, $3, $4, $5)",
-            [hotel_id, room_type, price, total, total] // Initially, available = total
-        );
-        res.json({ success: true, message: "Room type added successfully" });
-    } catch (err) {
-        console.error("❌ Room Add Error:", err.message);
-        res.status(500).json({ success: false, message: "Database error" });
-    }
-});
+
 // GET ALL BOOKINGS FOR A SPECIFIC HOTEL
 app.get('/api/bookings/list/:hotelId', async (req, res) => {
     try {
@@ -355,7 +359,6 @@ app.get('/api/search', async (req, res) => {
             "SELECT hotel_name, location, slug FROM hotels WHERE LOWER(location) LIKE $1 AND status = 'approved'",
             [`%${location.toLowerCase()}%`]
         );
-
         res.json({
             success: true,
             results: result.rows
@@ -403,8 +406,8 @@ app.post('/api/ai/chat', async (req, res) => {
 
     try {
         // 1. DATABASE CHECK: What rooms are available?
-        // Note: I updated this to match your table's column name 'price_per_night'
-        const roomData = await db.query("SELECT room_type, price_per_night FROM rooms WHERE hotel_id = $1", [hotelId]);
+        // Note: I updated this to match your table's column name 'price'
+        const roomData = await db.query("SELECT room_type, price FROM rooms WHERE hotel_id = $1", [hotelId]);
         const availableRooms = roomData.rows;
 
         // 2. LOGIC: User wants to BOOK a room
@@ -418,7 +421,7 @@ app.post('/api/ai/chat', async (req, res) => {
                 );
 
                 return res.json({ 
-                    reply: `Excellent choice. I have reserved the ${selectedRoom.room_type} for you at $${selectedRoom.price_per_night}. Your confirmation is ready.` 
+                    reply: `Excellent choice. I have reserved the ${selectedRoom.room_type} for you at $${selectedRoom.price}. Your confirmation is ready.` 
                 });
             } else {
                 return res.json({ 
@@ -430,7 +433,7 @@ app.post('/api/ai/chat', async (req, res) => {
 
         // 3. LOGIC: User is just ASKING about prices
         if (input.includes("price") || input.includes("how much")) {
-            const priceList = availableRooms.map(r => `${r.room_type} for $${r.price_per_night}`).join(", ");
+            const priceList = availableRooms.map(r => `${r.room_type} for $${r.price}`).join(", ");
             return res.json({ reply: `Our current rates are: ${priceList}.` });
         }
 
@@ -442,19 +445,32 @@ app.post('/api/ai/chat', async (req, res) => {
     }
 });
 // 1. OWNER ACTION: Add a new room via Dashboard
-app.post('/api/add-room', (req, res) => {
-    const { hotel_id, room_type, price, total_rooms, image_url, description } = req.body;
-    
-    // Using your exact column names: price, total_rooms, available_rooms
-    const query = `
-        INSERT INTO rooms (hotel_id, room_type, price, total_rooms, available_rooms, image_url, description) 
-        VALUES (?, ?, ?, ?, ?, ?, ?)`;
-    
-    // Defaulting available_rooms to total_rooms upon creation
-    db.query(query, [hotel_id, room_type, price, total_rooms, total_rooms, image_url, description], (err, result) => {
-        if (err) return res.status(500).json({ error: err.message });
-        res.status(200).json({ message: "Success: Room added to database." });
-    });
+// Updated Room Add Route with Image Upload support
+// Use this as your ONLY room addition route
+app.post('/api/add-room', upload.single('roomImage'), async (req, res) => {
+    try {
+        // LOGGING: Check your terminal to see if these appear
+        console.log("--- UPLOAD DEBUG ---");
+        console.log("File Info:", req.file); 
+        console.log("Body Info:", req.body);
+
+        const { hotel_id, room_type, price, total_rooms, description } = req.body;
+        const imagePath = req.file ? `/uploads/${req.file.filename}` : null;
+
+        // Double check your DB column: is it 'price' or 'price_per_night'? 
+        // Based on your previous code, let's use 'price'
+        const query = `
+            INSERT INTO rooms (hotel_id, room_type, price, total_rooms, available_rooms,description,room_image) 
+            VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`;
+        
+        const values = [hotel_id, room_type, price, total_rooms, total_rooms,description,imagePath];
+
+        const result = await db.query(query, values);
+        res.status(200).json({ success: true, message: "Saved to DB", room: result.rows[0] });
+    } catch (err) {
+        console.error("❌ DB ERROR:", err.message);
+        res.status(500).json({ success: false, error: err.message });
+    }
 });
 
 // Get rooms using the hotel SLUG instead of ID
@@ -470,24 +486,23 @@ app.get('/api/hotel-rooms-by-slug/:slug', (req, res) => {
         res.json(results);
     });
 });
-app.post('/api/hotels/update-info', async (req, res) => {
-    const { hotel_id, background_image } = req.body;
-
-    // 1. Validation to prevent empty values breaking the query
-    if (!hotel_id || !background_image) {
-        return res.status(400).json({ success: false, error: "Hotel ID or Image URL is missing." });
-    }
-
-    // 2. PostgreSQL uses $1, $2 instead of ?
-    const sql = "UPDATE hotels SET background_image = $1 WHERE hotel_id = $2";
-    
+// Updated Hotel Info Route to support File Upload for Hero Image
+app.post('/api/hotels/update-info', upload.single('background_image'), async (req, res) => {
     try {
-        // Using your db connection (assuming 'pg' or 'pool')
-        await db.query(sql, [background_image, hotel_id]); 
-        res.json({ success: true, message: "Luxury background updated in PostgreSQL." });
+        const { hotel_id } = req.body;
+        const imagePath = req.file ? `/uploads/${req.file.filename}` : null;
+
+        if (!hotel_id || !imagePath) {
+            return res.status(400).json({ success: false, error: "Missing data or file." });
+        }
+
+        const sql = "UPDATE hotels SET background_image = $1 WHERE hotel_id = $2";
+        await db.query(sql, [imagePath, hotel_id]); 
+        
+        res.json({ success: true, message: "Hotel background updated successfully." });
     } catch (err) {
         console.error("Postgres Error:", err);
-        res.status(500).json({ success: false, error: err.detail || err.message });
+        res.status(500).json({ success: false, error: err.message });
     }
 });
 

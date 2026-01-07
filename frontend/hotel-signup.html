@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>STAYSMART | REGISTER PROPERTY</title>
+    <title>STAYSMART | REGISTER HOTEL</title>
     <link rel="stylesheet" href="style.css">
     <style>
         /* Specific fixes for the overlapping layout */
@@ -82,7 +82,7 @@
         <a href="index.html" class="auth-logo" style="display: block; text-align: center; margin-bottom: 40px; text-decoration: none; color: #DAA520; letter-spacing: 10px;">STAYSMART</a>
         
         <div class="auth-box">
-            <h1 style="text-align: center; letter-spacing: 5px; margin-bottom: 40px; font-weight: 300;">REGISTER PROPERTY</h1>
+            <h1 style="text-align: center; letter-spacing: 5px; margin-bottom: 40px; font-weight: 300;">REGISTER HOTEL</h1>
             
             <form id="registrationForm" enctype="multipart/form-data">
                 
@@ -113,10 +113,10 @@
                         <input type="text" name="contact_phone" placeholder=" " required>
                         <label>Phone Number</label>
                     </div>
-                    <div class="input-group">
-                        <input type="text" name="slug" placeholder="e.g. royal-palms-hotel" required>
-                        <label>Unique URL Slug</label>
-                    </div>
+                   <div class="input-group">
+    <input type="text" name="slug" id="slugInput" placeholder=" " readonly required>
+    <label>Unique URL Slug (Auto-generated)</label>
+</div>
                 </div>
 
                <!-- <div class="input-group" style="margin-bottom:30px;"> -->
@@ -126,12 +126,12 @@
 
                 <div class="input-group" style="margin-bottom:30px;">
                     <input type="text" name="description" placeholder=" " required>
-                    <label>Short Property Description</label>
+                    <label>Short Hotel Description</label>
                 </div>
 
                 <div class="input-group" style="margin-bottom: 25px;">
                     <input type="text" name="address" placeholder=" " required>
-                    <label>PHYSICAL PROPERTY ADDRESS</label>
+                    <label>HOTEL ADDRESS</label>
                 </div>
 
                 <div class="input-group" style="margin-bottom: 30px; border-bottom: none;">
@@ -199,5 +199,23 @@
         }
     });
 </script>
+<script>
+        const nameInput = document.querySelector('input[name="hotel_name"]');
+        const slugInput = document.getElementById('slugInput');
+
+        if (nameInput && slugInput) {
+            nameInput.addEventListener('input', function() {
+                const generatedSlug = this.value
+                    .toLowerCase()
+                    .trim()
+                    .replace(/[^\w\s-]/g, '') 
+                    .replace(/[\s_-]+/g, '-') 
+                    .replace(/^-+|-+$/g, '');
+
+                slugInput.value = generatedSlug;
+            });
+        }
+    </script>
+
 </body>
 </html> 
